@@ -11,15 +11,15 @@
 
 ### Phase A. 로컬 코드 구현 (Vast.ai 불필요)
 
-- [ ] **P0** `scripts/launch.sh` — `nsys profile` 명령 추가
-- [ ] **P1** `handler/DDP/utils.py::run_process` — `mp.spawn`
-- [ ] **P2** `handler/DDP/utils.py::initialize_group` — `dist.init_process_group` + `torch.cuda.set_device`
-- [ ] **P3** `handler/DDP/utils.py::destroy_process` — `dist.destroy_process_group`
-- [ ] **P4** `handler/DDP/model.py::model_to_DDP` — `DDP(model.cuda(dev), device_ids=[dev])`
-- [ ] **P5** `handler/DDP/cifar10_loader.py::get_DDP_loader` — `DistributedSampler`
-- [ ] **P6** `handler/DALI/cifar10_loader.py::CifarPipeline` — pad/flip/crop/normalize/cutout
-- [ ] **P7** `handler/DALI/cifar10_loader.py::get_DALI_loader` — sharded pipeline + `DALIGenericIterator`
-- [ ] 로컬 정적 검증 (문법/import 경로/CPU gloo 스모크 테스트) — 아래 Phase B
+- [x] **P0** `scripts/launch.sh` — `nsys profile` 명령 추가
+- [x] **P1** `handler/DDP/utils.py::run_process` — `mp.spawn`
+- [x] **P2** `handler/DDP/utils.py::initialize_group` — `dist.init_process_group` + `torch.cuda.set_device`
+- [x] **P3** `handler/DDP/utils.py::destroy_process` — `dist.destroy_process_group`
+- [x] **P4** `handler/DDP/model.py::model_to_DDP` — `DDP(model.cuda(dev), device_ids=[dev])`
+- [x] **P5** `handler/DDP/cifar10_loader.py::get_DDP_loader` — `DistributedSampler`
+- [x] **P6** `handler/DALI/cifar10_loader.py::CifarPipeline` — pad/flip/crop/normalize/cutout
+- [x] **P7** `handler/DALI/cifar10_loader.py::get_DALI_loader` — sharded pipeline + `DALIGenericIterator`
+- [~] 로컬 정적 검증 — `py_compile` / `bash -n` 통과. 로컬에 torch가 없어 gloo 스모크 테스트는 생략 → Phase C 스모크 테스트에서 대체
 - [ ] commit
 
 ### Phase C. Vast.ai 실행
@@ -274,11 +274,18 @@ lab3_DDP_DALI_team{N}.zip
 
 ## 결정 필요 / 열린 이슈
 
-- [ ] DDP/DALI의 train batch: per-GPU `512 / world_size` (현재 계획, global batch 유지) vs per-GPU 512 — 계획대로 진행하되 보고서에 근거 명시
-- [ ] DALI seed를 shard마다 다르게 할지 (`12345 + shard_id`)
+- [x] DDP/DALI의 train batch → per-GPU `512 / world_size` (global batch 512 유지). 보고서에 근거 명시
+- [x] DALI seed를 shard마다 다르게 할지 → `12345 + shard_id` 로 결정 (rank별 augmentation 난수열 분리)
 - [ ] nsys GPU metrics 옵션이 Vast.ai에서 동작하는지 (Phase C에서 확인)
 - [ ] 팀 번호
 
 ## 작업 로그
 
 - **2026-09-28**: PDF 명세를 `report/spec.md`로 변환. 코드베이스 분석 후 미구현 지점(P0–P7) 확인 및 본 계획 작성.
+- **2026-09-28**: Phase A 구현 완료 (P0–P7).
+  - P0: `nsys profile --trace=cuda,nvtx,osrt,cudnn,cublas --cuda-memory-usage=true --sample=none --cpuctxsw=none`. GPU metrics 등 추가 옵션은 `NSYS_EXTRA_ARGS` 환경변수로 넘길 수 있게 함 (예: `NSYS_EXTRA_ARGS="--gpu-metrics-devices=all" bash run_vastai_ddp.sh`)
+  - P2: NCCL 바인딩을 위해 `set_device`를 `init_process_group`보다 먼저 호출
+  - P5/P7: 모든 로더에서 batch를 `// world_size`로 나누고, `world_size`로 나누어떨어지는지 assert
+  - P6: pad = `fn.paste(ratio=1.25)`, flip = `coin_flip` → CMN `mirror`, crop/normalize = CMN (`CHW`, float), cutout = 제공된 `fn_dali_cutout`
+  - P7: `LastBatchPolicy.PARTIAL` + `auto_reset=True`. `shuffle` 인자는 쓰지 않음 (train은 항상 shuffle, test는 하지 않음)
+  - Phase C에서 확인할 것: `fn.paste`/CMN 출력 shape `(B,3,32,32)`, `len(train_loader)` (2 GPU일 때 98), DDP와 DALI의 loss/acc가 비슷한지, nsys가 spawn된 자식 프로세스를 추적하는지

@@ -13,8 +13,20 @@ export NUM_GPUS
 # Find the correct way to generate Nsight log.
 ###########################################################################
 
-# Scaffold
-CUDA_VISIBLE_DEVICES=$LOCAL_GPU_IDS python train_cifar.py \
+#   --trace              : CUDA API/kernels, NVTX ranges (Epoch/Batch/forward/...), OS runtime, cuDNN, cuBLAS
+#   --cuda-memory-usage  : GPU memory usage timeline
+#   --sample/--cpuctxsw  : Vast.ai containers are unprivileged, so CPU sampling is disabled
+#   NSYS_EXTRA_ARGS      : optional extra options, e.g. NSYS_EXTRA_ARGS="--gpu-metrics-devices=all"
+# DDP children created by mp.spawn are traced into the same report.
+CUDA_VISIBLE_DEVICES=$LOCAL_GPU_IDS nsys profile \
+    --trace=cuda,nvtx,osrt,cudnn,cublas \
+    --cuda-memory-usage=true \
+    --sample=none \
+    --cpuctxsw=none \
+    --force-overwrite=true \
+    --output="$NSIGHT_LOG_DIR/$NSIGHT_FILE_NAME" \
+    $NSYS_EXTRA_ARGS \
+    python train_cifar.py \
     --num_gpu=$NUM_GPUS \
     --data="$DATA_DIR" \
     --ckpt="$CKPT_DIR" \

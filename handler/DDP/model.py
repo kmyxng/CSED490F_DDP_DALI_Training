@@ -8,5 +8,8 @@ def model_to_DDP(model):
     model_to_DDP function is used to transfer model to DDP, SIMILAR with DP.
     Be careful for set devices. Set profer device id is important part in DDP.
     '''
-    raise NotImplementedError()
-    return None
+    # Unlike DP (one process, all GPUs), each DDP process owns exactly one GPU
+    device = torch.cuda.current_device()
+    model = model.cuda(device)
+    model = DDP(model, device_ids=[device], output_device=device)
+    return model

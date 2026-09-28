@@ -83,44 +83,62 @@ def get_DDP_loader(test_batch, train_batch, root=base_dir, valid_size=0, valid_b
     You need to fill the missing parts.
     '''
 
-    raise NotImplementedError()
-    return None, None, None
+    if not dist.is_available() or not dist.is_initialized():
+        raise RuntimeError("Requires an initialized distributed process group")
+    world_size = dist.get_world_size()
+    rank = dist.get_rank()
 
-    """SCAFFOLD"""
+    # Batch sizes are global (same as DP), so each process loads 1/world_size of a batch.
+    assert train_batch % world_size == 0
+    assert test_batch % world_size == 0
+    assert valid_batch % world_size == 0
 
-    # world_size = "Fill it"
-    
-    # train_dataset = torchvision.datasets.CIFAR10(
-    #         root=root, train=True,
-    #         download=download, transform=transform_train)
-    
-    # if valid_size > 0:
-    #     train_dataset, valid_dataset = \
-    #         torch.utils.data.random_split(train_dataset, 
-    #                                       [50000-valid_size, valid_size],
-    #                                       generator=torch.Generator().manual_seed(random_seed))
-    #     valid_dataset.transforms = transform_test
-        
-    # test_dataset = torchvision.datasets.CIFAR10(
-    #         root=root, train=False, 
-    #         download=download, transform=transform_test)
-    
-    # if train_batch > 0:        
-    #     if cutout > 0:
-    #         transform_train.transforms.append(Cutout(cutout))
-    #     "fill it"    
-    # else:
-    #     train_loader = None
+    train_dataset = torchvision.datasets.CIFAR10(
+            root=root, train=True,
+            download=download, transform=transform_train)
 
-    # if valid_size > 0:
-    #     assert(valid_batch > 0, "validation set follows the batch size of test set, which is 0")
-    #     "fill it"    
-    # else:
-    #     valid_loader = None    
-    
-    # if test_batch > 0:
-    #     "fill it"    
-    # else:
-    #     test_loader = None
+    if valid_size > 0:
+        train_dataset, valid_dataset = \
+            torch.utils.data.random_split(train_dataset,
+                                          [50000-valid_size, valid_size],
+                                          generator=torch.Generator().manual_seed(random_seed))
+        valid_dataset.transforms = transform_test
 
-    # return test_loader, train_loader, valid_loader
+    test_dataset = torchvision.datasets.CIFAR10(
+            root=root, train=False,
+            download=download, transform=transform_test)
+
+    if train_batch > 0:
+        if cutout > 0:
+            transform_train.transforms.append(Cutout(cutout))
+        # DistributedSampler gives each rank a disjoint 1/world_size split of the dataset.
+        # It shuffles by itself, so DataLoader's shuffle must stay False.
+        train_sampler = DistributedSampler(
+            train_dataset, num_replicas=world_size, rank=rank,
+            shuffle=shuffle, seed=random_seed)
+        train_loader = torch.utils.data.DataLoader(
+            train_dataset, batch_size=train_batch // world_size, sampler=train_sampler,
+            num_workers=num_workers, pin_memory=True, drop_last=False)
+    else:
+        train_loader = None
+
+    if valid_size > 0:
+        assert valid_batch > 0, "validation set follows the batch size of test set, which is 0"
+        valid_sampler = DistributedSampler(
+            valid_dataset, num_replicas=world_size, rank=rank, shuffle=False)
+        valid_loader = torch.utils.data.DataLoader(
+            valid_dataset, batch_size=valid_batch // world_size, sampler=valid_sampler,
+            num_workers=num_workers, pin_memory=True, drop_last=False)
+    else:
+        valid_loader = None
+
+    if test_batch > 0:
+        test_sampler = DistributedSampler(
+            test_dataset, num_replicas=world_size, rank=rank, shuffle=False)
+        test_loader = torch.utils.data.DataLoader(
+            test_dataset, batch_size=test_batch // world_size, sampler=test_sampler,
+            num_workers=num_workers, pin_memory=True, drop_last=False)
+    else:
+        test_loader = None
+
+    return test_loader, train_loader, valid_loader
