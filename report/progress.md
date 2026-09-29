@@ -24,19 +24,23 @@
 
 ### Phase C. Vast.ai 실행
 
-- [ ] 인스턴스 대여 (2× RTX 3090, CUDA ≥ 12.1, disk ≥ 50 GB)
-- [ ] `bash scripts/init.sh`
-- [ ] 스모크 테스트 (짧게) → 문제 있으면 수정
-- [ ] `bash run_vastai_dp.sh`
-- [ ] `bash run_vastai_ddp.sh`
-- [ ] `bash run_vastai_ddp_dali.sh`
-- [ ] `nsight_logs/`, `logs/` 다운로드 (scp)
-- [ ] **instance destroy**
+- [x] 인스턴스 대여 — 2× RTX 3090 (24GB), driver 580.178 (CUDA 13.0), torch 2.4.1+cu118, nsys 2025.5.1, disk 32GB. SSH: `vast-direct` / `vast-proxy` (`~/.ssh/config`)
+- [x] `bash scripts/init.sh` — 첫 시도는 다운로드가 60%에서 멈춰 재실행. train 50,000 / test 10,000 PNG, `check_env.sh` 통과 (P2P access: False)
+- [x] 스모크 테스트 (2 GPU, nsys 없음) — DDP·DALI 모두 통과, 코드 수정 없음
+- [x] `bash run_vastai_dp.sh` — `dp_20260929_141639`
+- [x] `bash run_vastai_ddp.sh` — `ddp_20260929_141819`
+- [x] `bash run_vastai_ddp_dali.sh` — `ddp_dali_20260929_141948`
+- [x] `nsight_logs/`, `logs/` 다운로드 (scp, 49개 파일 MD5 일치) — 로컬 저장소의 `nsight_logs/`, `logs/` (gitignore 대상)
+- [x] **instance destroy**
 
 ### Phase D. 분석 & 보고서
 
-- [ ] TA 제공 `.nsys-rep` (DP, 1/2/4 GPU, RTX 3090) Google Drive에서 다운로드
-- [ ] 로컬 Nsight Systems 설치 (버전 ≥ 인스턴스의 `nsys --version`)
+- [x] TA 제공 `.nsys-rep` 다운로드 (gdown) → `nsight_logs/ta/{dp,ddp,ddp_dali}/gpu_{1,2,4}.nsys-rep` (9개, RTX 3090). spec에는 DP만 준다고 되어 있었으나 DDP/DDP+DALI도 포함
+- [ ] **To-do (GUI 수작업)**: TA 로그 9개를 `nsys-ui`에서 열어 **File → Export → SQLite**로 `nsight_logs/ta/{dp,ddp,ddp_dali}/gpu_{1,2,4}.sqlite`에 저장 → 그 뒤 요약 표 계산
+  - Mac용 Nsight Systems에는 명령줄 `nsys stats`/`export`가 없음 (앱 안 `nsys`는 Linux용). 인스턴스는 destroy됨
+  - 대안: Docker Desktop을 켜고 Linux용 `nsight-systems-cli` 컨테이너에서 `nsys stats` 실행
+- [ ] **To-do (GUI 수작업)**: 보고서용 타임라인 스크린샷 (DP / DDP / DDP+DALI, 2 GPU, NVTX + CUDA 행)
+- [x] 로컬 Nsight Systems 설치 — 2026.5.1 (인스턴스 2025.5.1 이상)
 - [ ] 수치 추출 & 비교표 작성
 - [ ] 보고서 작성 (≤ 4 pages, 11pt) → `lab3_DDP_DALI_team{N}.pdf`
 - [ ] 제출 zip 생성 → PLMS 업로드
@@ -276,7 +280,7 @@ lab3_DDP_DALI_team{N}.zip
 
 - [x] DDP/DALI의 train batch → per-GPU `512 / world_size` (global batch 512 유지). 보고서에 근거 명시
 - [x] DALI seed를 shard마다 다르게 할지 → `12345 + shard_id` 로 결정 (rank별 augmentation 난수열 분리)
-- [ ] nsys GPU metrics 옵션이 Vast.ai에서 동작하는지 (Phase C에서 확인)
+- [x] nsys GPU metrics 옵션 → **사용 불가** (`ERR_NVGPUCTRPERM`, 컨테이너 권한 부족). 대신 `nvidia-smi` 0.2초 간격 로그(`logs/nvidia_smi.csv`)로 GPU/Mem util 수집
 - [ ] 팀 번호
 
 ## 작업 로그
@@ -289,3 +293,34 @@ lab3_DDP_DALI_team{N}.zip
   - P6: pad = `fn.paste(ratio=1.25)`, flip = `coin_flip` → CMN `mirror`, crop/normalize = CMN (`CHW`, float), cutout = 제공된 `fn_dali_cutout`
   - P7: `LastBatchPolicy.PARTIAL` + `auto_reset=True`. `shuffle` 인자는 쓰지 않음 (train은 항상 shuffle, test는 하지 않음)
   - Phase C에서 확인할 것: `fn.paste`/CMN 출력 shape `(B,3,32,32)`, `len(train_loader)` (2 GPU일 때 98), DDP와 DALI의 loss/acc가 비슷한지, nsys가 spawn된 자식 프로세스를 추적하는지
+- **2026-09-29**: Phase C 시작. Vast.ai 인스턴스 준비 확인, `~/.no_auto_tmux` 설정, `/workspace`에 팀 fork clone (`9a05c6d`), `init.sh` 실행.
+  - 로컬 Nsight Systems는 인스턴스의 nsys **2025.5.1 이상**이어야 `.nsys-rep`를 열 수 있음
+- **2026-09-29**: 스모크 테스트 결과 (2 GPU, 1 epoch, nsys 없음)
+
+  | | DDP (torchvision) | DDP + DALI |
+  |---|---|---|
+  | iteration 수 | 98 | 98 |
+  | train loss / Prec@1 | 1.7676 / 36.85% | 1.7675 / 36.92% |
+  | test Prec@1 | 48.46% | 47.60% |
+  | batch당 시간 (avg) | 0.181 s | 0.098 s |
+  | 그중 data 대기 (avg) | 0.085 s (≈47%) | 0.000 s |
+
+  - DALI 파이프라인이 torchvision과 같은 학습 결과를 냄 → P6 동작 검증 완료
+  - `check_env.sh`: GPU 간 P2P access False → GPU 간 복사가 호스트 메모리를 거침 (DP 통신 overhead 분석에 활용)
+  - 본 실행 시작 (tmux `main`: dp → ddp → ddp_dali 순서, tmux `smi`: nvidia-smi 로깅)
+- **2026-09-29**: 본 실행 완료 (nsys 포함, 1 epoch). 로그 속 값 (Epoch 0의 50번째 iteration 시점 평균)
+
+  | 모드 | GPU | batch당 시간 | data 대기 | train Prec@1 | test Prec@1 |
+  |---|---|---|---|---|---|
+  | DP | 1 | 0.288 s | 0.171 s | 38.78% | 55.22% |
+  | DP | 2 | 0.353 s | 0.171 s | 36.01% | 49.22% |
+  | DDP | 1 | 0.287 s | 0.168 s | 37.48% | 48.80% |
+  | DDP | 2 | 0.192 s | 0.083 s | 36.78% | 50.48% |
+  | DDP+DALI | 1 | 0.123 s | 0.001 s | 34.86% | 46.62% |
+  | DDP+DALI | 2 | 0.100 s | 0.001 s | 36.44% | 47.73% |
+
+  - DP는 GPU 2개일 때 오히려 느려짐 (TA가 경고한 통신 overhead와 같은 현상)
+  - DP의 loss 값은 `DP/train.py`가 loss를 batch 크기로 한 번 더 나눠 기록해서 작게 보임 (DDP와 단위가 다름)
+  - nsys 켜고 실행하면 스모크 테스트보다 느림 (DDP 2 GPU 0.181 → 0.192 s)
+  - `nsys stats` CSV (nvtx_sum, cuda_gpu_kern_sum, cuda_gpu_mem_time_sum, cuda_gpu_mem_size_sum, cuda_api_sum) → `nsight_logs/stats/`
+- **2026-09-29**: Vast.ai 인스턴스 destroy 확인 (접속 거부). TA 로그 9개 다운로드 완료. 로컬에서 TA 로그를 CSV로 바꾸는 작업은 GUI export로 남겨 둠 (To-do)
