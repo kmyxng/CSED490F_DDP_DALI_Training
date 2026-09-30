@@ -1,0 +1,14 @@
+% Our Vast.ai runs. Values from report/results.json and logs/nvidia_smi.csv
+\footnotesize\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}llrrrrrrr@{}}
+\toprule
+Mode & GPU & epoch [s] & iter [ms] & outside [ms] & busy [\%] & smi GPU/mem [\%] & mem. [MiB] & H$\to$D [MiB] \\
+\midrule
+DP       & 1 & 27.8 & 284 & 259 & 37.9 & 40 / 21 & 3544 / 3854 & 586 \\
+DP       & 2 & 33.4 & 341 & 261 & 14.9 & 44 / 8  & 1939 / 2312 & 881 \\
+DDP      & 1 & 27.7 & 282 & 252 & 38.2 & 37 / 18 & 3662 / 4022 & 586 \\
+DDP      & 2 & 18.2 & 186 & 158 & 38.4 & 48 / 15 & 1957 / 2378 & 586 \\
+DDP+DALI & 1 & 11.7 & 119 &  90 & 93.9 & 92 / 45 & 4086 / 4552 & 158 \\
+DDP+DALI & 2 &  9.7 &  99 &  65 & 74.8 & 90 / 28 & 2389 / 2748 & 158 \\
+\bottomrule
+\end{tabular}

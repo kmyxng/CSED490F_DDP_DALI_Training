@@ -1,0 +1,50 @@
+% Shared preamble for lab3_report.tex (English) and lab3_report_ko.tex (Korean). Compile with XeLaTeX.
+\usepackage[margin=1.8cm]{geometry}
+\usepackage{fontspec}
+\usepackage{kotex}
+\setmainhangulfont{HCR Batang}
+\setsanshangulfont{HCR Dotum}
+\setmonohangulfont{HCR Dotum}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{titlesec}
+\usepackage{pgfplots}
+\usepackage{tabularx}
+\usepackage[hidelinks]{hyperref}
+\pgfplotsset{compat=1.18}
+
+% Categorical slots 1-3 of the reference palette (validated: adjacent and all-pairs)
+\definecolor{s1}{HTML}{2A78D6}
+\definecolor{s2}{HTML}{EB6834}
+\definecolor{s3}{HTML}{1BAF7A}
+\definecolor{ink2}{HTML}{52514E}
+\definecolor{grid}{HTML}{E4E3DF}
+
+% Spacing: a clear gap above and below every paragraph
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{7pt plus 2pt minus 1pt}
+\titlespacing*{\section}{0pt}{12pt plus 2pt}{4pt}
+\setlist{topsep=2pt,itemsep=2pt,parsep=0pt,leftmargin=*}
+\captionsetup{font=small,skip=4pt}
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+\lstset{basicstyle=\ttfamily\footnotesize,columns=fullflexible,keepspaces=true,
+        frame=none,aboveskip=0pt,belowskip=0pt,xleftmargin=6pt}
+
+% Title block
+\newcommand{\team}{4}
+\newcommand{\authorsline}{20262756 Kwangmo Yang (양광모), \quad 20262346 Chanyoung Gwak (곽찬영)}
+\newcommand{\maketitleblock}{%
+  \begin{center}
+    {\LARGE\bfseries Lab 3: DDP / DALI Implementation \& Profiling\par}
+    \vspace{4pt}
+    {\large CSED490F Deep Learning Implementation --- \textbf{Team \team}\par}
+    \vspace{3pt}
+    {\normalsize \authorsline\par}
+  \end{center}
+  \vspace{2pt}}

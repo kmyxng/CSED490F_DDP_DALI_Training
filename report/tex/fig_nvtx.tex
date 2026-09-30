@@ -1,0 +1,21 @@
+% Per-iteration NVTX breakdown (TA logs). Labels: \LblIterAxis, \LblFwd, \LblBwd, \LblOut
+\begin{tikzpicture}
+\begin{axis}[
+  xbar stacked, bar width=7pt, width=0.80\linewidth, height=6.0cm,
+  xmin=0, xmax=360, xlabel={\LblIterAxis},
+  symbolic y coords={DALI-4,DALI-2,DALI-1,DDP-4,DDP-2,DDP-1,DP-4,DP-2,DP-1},
+  ytick={DALI-4,DALI-2,DALI-1,DDP-4,DDP-2,DDP-1,DP-4,DP-2,DP-1},
+  yticklabels={DDP+DALI\,/\,4,DDP+DALI\,/\,2,DDP+DALI\,/\,1,DDP\,/\,4,DDP\,/\,2,DDP\,/\,1,DP\,/\,4,DP\,/\,2,DP\,/\,1},
+  y tick label style={font=\footnotesize}, x tick label style={font=\footnotesize}, xlabel style={font=\footnotesize},
+  axis x line*=bottom, axis y line*=left, xmajorgrids, grid style={grid},
+  major tick length=0pt, enlarge y limits=0.07,
+  legend style={font=\footnotesize, draw=none, at={(0.5,1.02)}, anchor=south, legend columns=3, column sep=6pt},
+  legend image code/.code={\draw[#1, draw=none] (0cm,-0.1cm) rectangle (0.3cm,0.1cm);},
+  every axis plot/.append style={draw=white, line width=0.6pt},
+]
+\addplot[fill=s1] coordinates {(8.8,DP-1) (57.9,DP-2) (79.4,DP-4) (11.0,DDP-1) (10.8,DDP-2) (13.3,DDP-4) (12.2,DALI-1) (21.0,DALI-2) (22.4,DALI-4)};
+\addplot[fill=s2] coordinates {(21.6,DP-1) (36.7,DP-2) (44.4,DP-4) (22.7,DDP-1) (22.0,DDP-2) (22.0,DDP-4) (39.4,DALI-1) (32.5,DALI-2) (29.7,DALI-4)};
+\addplot[fill=s3] coordinates {(280,DP-1) (234,DP-2) (227,DP-4) (299,DDP-1) (147,DDP-2) (103,DDP-4) (57,DALI-1) (20,DALI-2) (16,DALI-4)};
+\legend{{\LblFwd}, {\LblBwd}, {\LblOut}}
+\end{axis}
+\end{tikzpicture}

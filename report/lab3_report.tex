@@ -1,0 +1,161 @@
+\documentclass[11pt,a4paper]{article}
+\input{tex/preamble}
+
+% Figure labels (English)
+\newcommand{\LblIterAxis}{time per iteration [ms] (NVTX, TA logs)}
+\newcommand{\LblFwd}{forward}
+\newcommand{\LblBwd}{backward (+upload, loss)}
+\newcommand{\LblOut}{outside batch (loader wait + sync)}
+\newcommand{\LblGPU}{\#GPU}
+\newcommand{\LblSMs}{SMs Active [\%]}
+\newcommand{\LblEpoch}{epoch time [s]}
+
+\begin{document}
+\sloppy
+\maketitleblock
+
+\section{Implementation}
+
+All changes are in \texttt{handler/} and \texttt{scripts/launch.sh}; \texttt{train\_cifar.py} is untouched.
+Global batch sizes stay at 512 (train/test) in every mode, so DP, DDP and DALI do the same work per iteration.
+
+\textbf{P0 (Nsight command).} The scaffold command is wrapped with \texttt{nsys profile}. NVTX is required for the
+\texttt{nvtx.annotate} ranges in the code; CPU sampling is disabled because Vast.ai containers are unprivileged.
+Children created by \texttt{mp.spawn} are traced into the same report.
+\begin{lstlisting}
+CUDA_VISIBLE_DEVICES=$LOCAL_GPU_IDS nsys profile --trace=cuda,nvtx,osrt,cudnn,cublas \
+    --cuda-memory-usage=true --sample=none --cpuctxsw=none --force-overwrite=true \
+    --output="$NSIGHT_LOG_DIR/$NSIGHT_FILE_NAME" $NSYS_EXTRA_ARGS python train_cifar.py ...
+\end{lstlisting}
+
+\textbf{P1--P3 (process group).} \texttt{run\_process} calls \texttt{mp.spawn(func, args=(args,), nprocs=num\_gpu)},
+so \texttt{main\_func(proc\_id, args)} runs once per GPU. \texttt{initialize\_group} first calls
+\texttt{torch.cuda.set\_device(proc\_id)} (GPUs are restricted by \texttt{CUDA\_VISIBLE\_DEVICES}, so rank = local device)
+and then \texttt{dist.init\_process\_group("nccl",} \mbox{\texttt{init\_method="tcp://host:port",}} \texttt{world\_size, rank)}; setting the device
+first binds each NCCL communicator to its own GPU. \texttt{destroy\_process} calls \texttt{dist.destroy\_process\_group()}
+only if the group was initialized, because it runs in a \texttt{finally} block.
+
+\textbf{P4 (model).} Unlike DP (one process driving all GPUs, \texttt{device\_ids=[0..N-1]}), each DDP process owns one GPU:
+\texttt{model.cuda(dev)} and \texttt{DDP(model, device\_ids=[dev], output\_device=dev)} with \texttt{dev = torch.cuda.current\_device()}.
+
+\textbf{P5 (DDP loader).} Each split gets a \texttt{DistributedSampler(num\_replicas=world\_size, rank=rank)} (shuffled for train,
+not for test), passed as \texttt{sampler=} with \texttt{shuffle} removed from the \texttt{DataLoader}. The per-process batch is
+\texttt{batch // world\_size} (asserted divisible), so ranks see disjoint shards and the global batch equals DP's.
+The metrics in \texttt{DDP/train.py} are all-reduced, so logged loss/accuracy are global.
+
+\textbf{P6 (DALI pipeline).} The pipeline reproduces the torchvision transforms operator by operator:
+\begin{center}\footnotesize
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.27\linewidth}>{\raggedright\arraybackslash}X@{}}
+\toprule
+torchvision (DP/DDP) & DALI (\texttt{CifarPipeline.define\_graph}) \\
+\midrule
+\texttt{ImageFolder} read, shuffle & \texttt{fn.readers.file(file\_root, shard\_id=rank, num\_shards=N,} \texttt{random\_shuffle=is\_train, name="Reader")} \\
+PIL decode & \texttt{fn.decoders.image(device="mixed", output\_type=RGB)} $\rightarrow$ GPU, HWC uint8 \\
+\texttt{RandomCrop(32, padding=4)} & \texttt{fn.paste(ratio=1.25, fill\_value=0)} (centered, 40$\times$40) + CMN \texttt{crop=(32,32)}, random \texttt{crop\_pos\_x/y} \\
+\texttt{RandomHorizontalFlip()} & \texttt{mirror = fn.random.coin\_flip(0.5)} passed to CMN \\
+\texttt{ToTensor + Normalize} & CMN \texttt{mean/std} ($\times$255), \texttt{dtype=FLOAT}, \texttt{output\_layout="CHW"} \\
+\texttt{Cutout(16)} (after normalize) & provided \texttt{fn\_dali\_cutout} (\texttt{fn.erase}, fill 0) \\
+\bottomrule
+\end{tabularx}
+\end{center}
+CMN = \texttt{fn.crop\_mirror\_normalize}. The seed is \texttt{12345 + shard\_id} so ranks draw different augmentations. The class
+folders are sorted alphabetically, which matches torchvision's CIFAR-10 label order. Two known differences: the provided cutout keeps the
+square fully inside the image, and PNG (unlike JPEG) is decoded on the CPU even with the \texttt{mixed} backend.
+
+\textbf{P7 (DALI loader).} Per split, a \texttt{CifarPipeline} is built with batch \texttt{batch // world\_size}, \texttt{device\_id = current device}, and
+\texttt{shard\_id = rank}, then wrapped as \texttt{DALIWrapper(DALIGenericIterator(pipe, ["data","label"], reader\_name="Reader",
+last\_batch\_policy=PARTIAL, auto\_reset=True))}. \texttt{PARTIAL} matches \texttt{drop\_last=False}; \texttt{auto\_reset} is needed because the
+wrapper re-raises \texttt{StopIteration}.
+
+\textbf{Correctness.} On 2 GPUs (98 iterations each), DDP and DDP+DALI reach the same 1-epoch train loss (1.7676 vs.\ 1.7675) and a similar test
+accuracy (48.5\% vs.\ 47.6\%), so the DALI pipeline is equivalent to the torchvision one.
+
+\section{Setup and method}
+
+We use the TA-provided logs (RTX 3090, 1/2/4 GPUs, all three modes) as the main data, because only they contain hardware GPU metrics
+(\emph{SMs Active} and \emph{DRAM bandwidth}; collecting them needs privileges that Vast.ai containers do not have). Our own runs
+(Vast.ai, 2$\times$RTX 3090, no GPU peer-to-peer access, 1/2 GPUs) reproduce the trends (Table~\ref{tab:ours}). Each \texttt{.nsys-rep} was exported to SQLite and
+summarized with \texttt{report/analyze.py}. All numbers are inside the NVTX \texttt{Epoch 0} range and averaged over ranks. We split one iteration (98 per epoch) using the NVTX rows:
+\begin{itemize}
+\item \textbf{batch range}: the NVTX \texttt{Batch i} / \texttt{Train batch} range, split into \texttt{forward} and \texttt{backward} (+\,\texttt{upload}, \texttt{loss});
+\item \textbf{outside batch}: iteration time minus the batch range, i.e.\ \texttt{next(loader)} plus the metric all-reduce/\texttt{.item()}, which also waits for queued GPU work.
+\end{itemize}
+NVTX ranges measure CPU time. We therefore also report \emph{compute busy}: the union of non-NCCL kernel intervals over the epoch, per GPU.
+NCCL kernels are excluded because they stay resident while waiting for other ranks.
+
+\section{Results}
+
+\begin{figure}[h]
+\centering
+\input{tex/fig_nvtx}
+\caption{Per-iteration breakdown from the NVTX rows (mode\,/\,\#GPU). Values are in Table~\ref{tab:nvtx}.}
+\label{fig:nvtx}
+\end{figure}
+
+\begin{table}[h]
+\centering\small
+\caption{NVTX breakdown and GPU metrics (TA logs, mean over GPUs). Busy = compute-kernel busy time over the epoch.}
+\label{tab:nvtx}
+\input{tex/tab_nvtx}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\input{tex/fig_scaling}
+\caption{GPU utilization (SMs Active, left) and epoch time (right) vs.\ number of GPUs (TA logs, values in Table~\ref{tab:nvtx}).}
+\label{fig:scaling}
+\end{figure}
+
+\begin{table}[h]
+\centering\small
+\caption{Our Vast.ai runs (nvidia-smi sampled every 200\,ms inside the epoch; memory = peak allocated / nvidia-smi max, per GPU).}
+\label{tab:ours}
+\input{tex/tab_ours}
+\end{table}
+
+\section{Analysis: how and why GPU/memory utilization changes}
+
+\textbf{Baseline (1 GPU).} With the torchvision loader (\texttt{num\_workers=0}), the \emph{outside-batch} time is 280--300\,ms of a
+310--333\,ms iteration. Our logs confirm that this is data loading: the loader's own \texttt{Data} timer is 0.17\,s per iteration. PNG decode and augmentation of
+512 images run on one CPU thread, while the GPU needs only $\approx$97\,ms of kernels per iteration. The GPU is therefore idle about 70\% of the time
+(SMs Active 26--28\%, DRAM read 9\%). Both DP and DDP start from this CPU-bound point.
+
+\textbf{DP gets slower with more GPUs.} Kernel time per GPU halves (96$\rightarrow$52$\rightarrow$28\,ms), but utilization falls roughly as $1/N$
+(SMs Active 28$\rightarrow$14$\rightarrow$7\%, DRAM read 9$\rightarrow$4$\rightarrow$2\%) and the epoch grows (30.4$\rightarrow$34.4\,s). Two reasons:
+(i) a single process still loads all 512 images per iteration, so the outside-batch time stays at 227--280\,ms and extra GPUs only wait longer.
+(ii) The DP work inside the batch grows: \texttt{forward} goes from 8.8 to 79.4\,ms, because every iteration scatters the input, replicates the
+parameters (\texttt{ncclBroadcast}), runs the replicas from Python threads under the GIL, and gathers the outputs on GPU\,0; \texttt{backward} goes from 21 to 43\,ms
+because of the gradient \texttt{ncclReduce}. The input also crosses PCIe twice: H$\to$D grows from 586 to 881/1029\,MiB and D$\to$H from 0 to
+295/442\,MiB, exactly $(N{-}1)/N$ of the batch, because GPU\,0 scatters through host memory. This is the communication overhead the TAs warned
+about; it grows with $N$ while the useful work per GPU shrinks. Memory per GPU also halves (3544$\rightarrow$1939\,MiB allocated), since each replica
+holds only $512/N$ activations.
+
+\textbf{DDP scales with the number of processes.} DDP runs one process per GPU, so each loads only its $512/N$ shard in parallel. The outside-batch
+time falls 299$\rightarrow$147$\rightarrow$103\,ms and the epoch 32.6$\rightarrow$17.7$\rightarrow$13.6\,s (2.4$\times$ on 4 GPUs). The batch range stays
+at $\approx$33\,ms. Parameters are synchronized once (\texttt{Sync model parameters}); per step only the small BatchNorm buffers are broadcast (all
+\texttt{ncclBroadcast} calls fall inside \texttt{forward}), with no input scatter or model replication as in DP. Gradients are all-reduced in 2--3 buckets
+that overlap with \texttt{backward}: 544 of the 1368 \texttt{ncclAllReduce} calls (2 GPUs) fall inside \texttt{backward}, and most of the rest are the
+per-step metric \texttt{reduce\_tensor} outside the batch range. As a result, utilization per GPU is
+roughly kept at 2 GPUs (SMs 26$\rightarrow$25\%, DRAM 8.5$\rightarrow$8.0\%). At 4 GPUs it drops to 17\% because the per-GPU compute (31\,ms) shrinks faster than the loader
+time, and NCCL kernels (4.0\,s per GPU) spend more time waiting for the slowest rank. The bucket copies show up as 4.2\,GiB of D$\to$D traffic per GPU per epoch.
+Peak memory per GPU is the same as DP's (1957\,MiB on 2 GPUs) and balanced across ranks.
+
+\textbf{DALI removes the loader bottleneck.} DALI prefetches batches and runs crop/flip/normalize/cutout on the GPU, overlapping them with training.
+On 1 GPU the outside-batch time falls from 299 to 57\,ms and the epoch from 32.6 to 10.6\,s (3.1$\times$). The GPU becomes busy
+(SMs Active 82\%, compute busy 91\%, nvidia-smi 92\%) and memory bandwidth use triples (DRAM read 26\%, nvidia-smi memory util 45\% vs.\ 18\%). Most of the remaining
+outside-batch time is now \texttt{.item()} waiting for queued kernels, not data. H$\to$D traffic drops 3.7$\times$ (586$\rightarrow$158--172\,MiB), because uint8
+images are uploaded instead of normalized float32 tensors. The costs: the pipeline build makes \texttt{Set data loader} 3.3\,s instead of 1.0\,s, and DALI buffers use
+$\approx$430\,MiB more GPU memory (4086 vs.\ 3662\,MiB). Multi-GPU scaling now hits another limit. Per-GPU kernel time falls to 31\,ms on 4 GPUs, but the CPU-side batch range
+stays at $\approx$52\,ms, so launching ResNet-18's kernels for a small batch of 128 dominates. SMs Active drops to 61\% (2 GPUs) and 34\% (4 GPUs), and the epoch improves only 10.6$\rightarrow$7.2$\rightarrow$6.7\,s.
+
+\textbf{Notes.} (1) nvidia-smi's \emph{GPU util} counts any running kernel, including NCCL kernels waiting for peers. For our DP 2-GPU run it reports 44\%
+while compute kernels are busy only 15\%, so we use SMs Active and compute-busy time. (2) The TA logs report \emph{GPU Active} = 100\% on some GPUs with the same
+SMs Active as the others, so we do not use that metric. (3) Our instance has no GPU peer-to-peer access, and its per-GPU kernel time for DDP on 2 GPUs is higher (71 vs.\ 51\,ms).
+The trends and the ranking DP $<$ DDP $<$ DDP+DALI are the same as in the TA logs.
+
+\textbf{Conclusion.} DP is limited by a single-process data loader and by per-iteration scatter/replicate/gather, so adding GPUs lowers
+utilization and slows training. DDP parallelizes loading across processes and overlaps gradient all-reduce with backward, which gives near-linear speedup
+while loading dominates. DALI moves augmentation to the GPU and prefetches asynchronously, which raises GPU and memory-bandwidth utilization to 80--90\%
+on one GPU. After that, the next bottleneck is CPU kernel-launch overhead for small per-GPU batches.
+
+\end{document}

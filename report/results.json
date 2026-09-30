@@ -1,0 +1,1469 @@
+{
+ "ta/dp/1": {
+  "epoch_window_s": 30.397840367,
+  "ranks": [
+   {
+    "epoch_s": 30.397840367,
+    "iters": 98,
+    "iter_ms": 310.1820445612245,
+    "batch_range_ms": 30.339177408163266,
+    "outside_batch_ms": 279.8428671530612,
+    "step_ms": {
+     "upload data to GPU": 0.09726889795918367,
+     "forward": 8.765662693877552,
+     "loss": 0.3921902448979592,
+     "backward": 20.922536357142857
+    }
+   }
+  ],
+  "setup_s": {
+   "Set data loader": 0.973069933,
+   "Set Data Parallelism": 0.278207578,
+   "Sync model parameters": null
+  },
+  "library_nvtx": {},
+  "devices": {
+   "0": {
+    "kernel_busy_pct": 31.092642713725716,
+    "compute_busy_pct": 31.092642713725716,
+    "compute_ms_per_iter": 96.44379487755103,
+    "nccl_kernel_ms": 0.0
+   }
+  },
+  "memcpy": {
+   "HtoD": {
+    "count": 294,
+    "MB": 586.3193435668945,
+    "ms": 65.621968
+   },
+   "DtoH": {
+    "count": 392,
+    "MB": 0.001495361328125,
+    "ms": 0.579236
+   },
+   "DtoD": {
+    "count": 62,
+    "MB": 42.625282287597656,
+    "ms": 0.2016
+   }
+  },
+  "mem_peak_MB": null,
+  "gpu_metrics": {
+   "0": {
+    "GPU Active [Throughput %]": 31.460794731180318,
+    "SMs Active [Throughput %]": 27.998253157311243,
+    "SM Issue [Throughput %]": 3.811854186336466,
+    "Tensor Active [Throughput %]": 7.045440937965702,
+    "DRAM Read Bandwidth [Throughput %]": 9.061873102241288,
+    "DRAM Write Bandwidth [Throughput %]": 5.288482352283232,
+    "PCIe RX Throughput [Throughput %]": 0.4615414982054563,
+    "PCIe TX Throughput [Throughput %]": 1.014484648509591
+   }
+  },
+  "nvidia_smi": null
+ },
+ "ta/dp/2": {
+  "epoch_window_s": 32.169173471,
+  "ranks": [
+   {
+    "epoch_s": 32.169173471,
+    "iters": 98,
+    "iter_ms": 328.2568721530612,
+    "batch_range_ms": 94.58300044897959,
+    "outside_batch_ms": 233.6738717040816,
+    "step_ms": {
+     "upload data to GPU": 0.0989480306122449,
+     "forward": 57.88289117346939,
+     "loss": 0.5246226428571429,
+     "backward": 35.92082408163265
+    }
+   }
+  ],
+  "setup_s": {
+   "Set data loader": 0.950495915,
+   "Set Data Parallelism": 0.248090285,
+   "Sync model parameters": null
+  },
+  "library_nvtx": {
+   "ncclCommInitAll": {
+    "count": 1,
+    "total_ms": 386.45
+   },
+   "ncclGroupEnd": {
+    "count": 1079,
+    "total_ms": 354.0
+   },
+   "ncclReduce": {
+    "count": 980,
+    "total_ms": 7.65
+   },
+   "ncclBroadcast": {
+    "count": 1176,
+    "total_ms": 6.48
+   },
+   "ncclGroupStart": {
+    "count": 1079,
+    "total_ms": 1.9
+   }
+  },
+  "devices": {
+   "0": {
+    "kernel_busy_pct": 19.558730912598772,
+    "compute_busy_pct": 16.081305482292166,
+    "compute_ms_per_iter": 52.78799037755102,
+    "nccl_kernel_ms": 1118.659019
+   },
+   "1": {
+    "kernel_busy_pct": 18.394740988090586,
+    "compute_busy_pct": 15.78638626378776,
+    "compute_ms_per_iter": 51.8198977755102,
+    "nccl_kernel_ms": 839.086156
+   }
+  },
+  "memcpy": {
+   "HtoD": {
+    "count": 610,
+    "MB": 881.2193069458008,
+    "ms": 107.862284
+   },
+   "DtoH": {
+    "count": 686,
+    "MB": 294.8775939941406,
+    "ms": 44.807683
+   },
+   "DtoD": {
+    "count": 160,
+    "MB": 43.578956604003906,
+    "ms": 0.357699
+   }
+  },
+  "mem_peak_MB": null,
+  "gpu_metrics": {
+   "0": {
+    "GPU Active [Throughput %]": 20.04032142746122,
+    "SMs Active [Throughput %]": 14.26291771581336,
+    "SM Issue [Throughput %]": 2.1022381796139142,
+    "Tensor Active [Throughput %]": 3.6008424259380147,
+    "DRAM Read Bandwidth [Throughput %]": 4.480403494047064,
+    "DRAM Write Bandwidth [Throughput %]": 2.68146973794647,
+    "PCIe RX Throughput [Throughput %]": 1.3160589387298331,
+    "PCIe TX Throughput [Throughput %]": 2.1465758960489913
+   },
+   "1": {
+    "GPU Active [Throughput %]": 100.0,
+    "SMs Active [Throughput %]": 13.980736052522778,
+    "SM Issue [Throughput %]": 2.084295701749205,
+    "Tensor Active [Throughput %]": 3.6053144496703338,
+    "DRAM Read Bandwidth [Throughput %]": 4.30438093935447,
+    "DRAM Write Bandwidth [Throughput %]": 2.52184252492314,
+    "PCIe RX Throughput [Throughput %]": 1.241789430163916,
+    "PCIe TX Throughput [Throughput %]": 2.0720012185682446
+   }
+  },
+  "nvidia_smi": null
+ },
+ "ta/dp/4": {
+  "epoch_window_s": 34.361804926,
+  "ranks": [
+   {
+    "epoch_s": 34.361804926,
+    "iters": 98,
+    "iter_ms": 350.63066251020405,
+    "batch_range_ms": 123.69138156122449,
+    "outside_batch_ms": 226.93928094897956,
+    "step_ms": {
+     "upload data to GPU": 0.09217067346938775,
+     "forward": 79.40950010204081,
+     "loss": 0.9754747959183674,
+     "backward": 43.054468704081636
+    }
+   }
+  ],
+  "setup_s": {
+   "Set data loader": 0.934126555,
+   "Set Data Parallelism": 0.27364026,
+   "Sync model parameters": null
+  },
+  "library_nvtx": {
+   "ncclGroupEnd": {
+    "count": 1079,
+    "total_ms": 1147.86
+   },
+   "ncclCommInitAll": {
+    "count": 1,
+    "total_ms": 1126.5
+   },
+   "ncclBroadcast": {
+    "count": 2352,
+    "total_ms": 27.73
+   },
+   "ncclReduce": {
+    "count": 1960,
+    "total_ms": 12.58
+   },
+   "ncclGroupStart": {
+    "count": 1079,
+    "total_ms": 1.83
+   }
+  },
+  "devices": {
+   "0": {
+    "kernel_busy_pct": 15.223546339505228,
+    "compute_busy_pct": 8.056290904862696,
+    "compute_ms_per_iter": 28.247826173469385,
+    "nccl_kernel_ms": 2462.798331
+   },
+   "1": {
+    "kernel_busy_pct": 14.632435679173438,
+    "compute_busy_pct": 7.779875442390491,
+    "compute_ms_per_iter": 27.278628806122452,
+    "nccl_kernel_ms": 2354.663381
+   },
+   "2": {
+    "kernel_busy_pct": 15.239006074555352,
+    "compute_busy_pct": 7.7745237502894495,
+    "compute_ms_per_iter": 27.25986413265306,
+    "nccl_kernel_ms": 2564.930855
+   },
+   "3": {
+    "kernel_busy_pct": 15.368216533946573,
+    "compute_busy_pct": 7.776125604444624,
+    "compute_ms_per_iter": 27.265480724489798,
+    "nccl_kernel_ms": 2608.779475
+   }
+  },
+  "memcpy": {
+   "HtoD": {
+    "count": 1248,
+    "MB": 1028.6831436157227,
+    "ms": 121.712036
+   },
+   "DtoH": {
+    "count": 1274,
+    "MB": 442.3156433105469,
+    "ms": 67.966011
+   },
+   "DtoD": {
+    "count": 160,
+    "MB": 43.10211944580078,
+    "ms": 0.337953
+   }
+  },
+  "mem_peak_MB": null,
+  "gpu_metrics": {
+   "0": {
+    "GPU Active [Throughput %]": 15.729028915999255,
+    "SMs Active [Throughput %]": 7.000372508847085,
+    "SM Issue [Throughput %]": 1.0958279009126466,
+    "Tensor Active [Throughput %]": 1.6871682343080647,
+    "DRAM Read Bandwidth [Throughput %]": 2.310349343453157,
+    "DRAM Write Bandwidth [Throughput %]": 1.454725623952319,
+    "PCIe RX Throughput [Throughput %]": 1.2018794235425592,
+    "PCIe TX Throughput [Throughput %]": 2.0834041488172845
+   },
+   "1": {
+    "GPU Active [Throughput %]": 100.0,
+    "SMs Active [Throughput %]": 6.750021826817301,
+    "SM Issue [Throughput %]": 1.0823423958278766,
+    "Tensor Active [Throughput %]": 1.6892530572095432,
+    "DRAM Read Bandwidth [Throughput %]": 2.126662475917745,
+    "DRAM Write Bandwidth [Throughput %]": 1.3027903403237353,
+    "PCIe RX Throughput [Throughput %]": 1.0930753694552608,
+    "PCIe TX Throughput [Throughput %]": 2.885697323159126
+   },
+   "2": {
+    "GPU Active [Throughput %]": 100.0,
+    "SMs Active [Throughput %]": 6.7579594663810765,
+    "SM Issue [Throughput %]": 1.0877200130378097,
+    "Tensor Active [Throughput %]": 1.6877502793816352,
+    "DRAM Read Bandwidth [Throughput %]": 2.135305108027566,
+    "DRAM Write Bandwidth [Throughput %]": 1.3094471735891227,
+    "PCIe RX Throughput [Throughput %]": 1.9849133916930528,
+    "PCIe TX Throughput [Throughput %]": 2.981383288321848
+   },
+   "3": {
+    "GPU Active [Throughput %]": 15.60826329390948,
+    "SMs Active [Throughput %]": 6.762371368038741,
+    "SM Issue [Throughput %]": 1.0891547541441609,
+    "Tensor Active [Throughput %]": 1.6882944915254237,
+    "DRAM Read Bandwidth [Throughput %]": 2.130328622648538,
+    "DRAM Write Bandwidth [Throughput %]": 1.3071975693797728,
+    "PCIe RX Throughput [Throughput %]": 1.992797192214565,
+    "PCIe TX Throughput [Throughput %]": 2.075662949338797
+   }
+  },
+  "nvidia_smi": null
+ },
+ "ta/ddp/1": {
+  "epoch_window_s": 32.615128004,
+  "ranks": [
+   {
+    "epoch_s": 32.615128004,
+    "iters": 98,
+    "iter_ms": 332.8074286122449,
+    "batch_range_ms": 33.6678571632653,
+    "outside_batch_ms": 299.1395714489796,
+    "step_ms": {
+     "upload data to GPU": 0.0849158469387755,
+     "forward": 10.956243765306123,
+     "loss": 0.4233055510204082,
+     "backward": 22.054574724489797
+    }
+   }
+  ],
+  "setup_s": {
+   "Set data loader": 0.963888416,
+   "Set Data Parallelism": 0.393050148,
+   "Sync model parameters": 0.980372261
+  },
+  "library_nvtx": {
+   "ncclAllReduce": {
+    "count": 684,
+    "total_ms": 3.54
+   },
+   "ncclBroadcast": {
+    "count": 198,
+    "total_ms": 0.8
+   }
+  },
+  "devices": {
+   "0": {
+    "kernel_busy_pct": 29.1572455850356,
+    "compute_busy_pct": 29.1572455850356,
+    "compute_ms_per_iter": 97.03747928571428,
+    "nccl_kernel_ms": 0.0
+   }
+  },
+  "memcpy": {
+   "HtoD": {
+    "count": 296,
+    "MB": 586.3195953369141,
+    "ms": 63.309861
+   },
+   "DtoH": {
+    "count": 394,
+    "MB": 0.00174713134765625,
+    "ms": 0.578401
+   },
+   "DtoD": {
+    "count": 12410,
+    "MB": 4223.508262634277,
+    "ms": 26.505351
+   }
+  },
+  "mem_peak_MB": null,
+  "gpu_metrics": {
+   "0": {
+    "GPU Active [Throughput %]": 29.6035186371873,
+    "SMs Active [Throughput %]": 26.26541550027748,
+    "SM Issue [Throughput %]": 3.5852233181766615,
+    "Tensor Active [Throughput %]": 6.610101518017839,
+    "DRAM Read Bandwidth [Throughput %]": 8.486581286467228,
+    "DRAM Write Bandwidth [Throughput %]": 4.966524502604638,
+    "PCIe RX Throughput [Throughput %]": 0.44218440038142076,
+    "PCIe TX Throughput [Throughput %]": 1.013582748988959
+   }
+  },
+  "nvidia_smi": null
+ },
+ "ta/ddp/2": {
+  "epoch_window_s": 17.660870608,
+  "ranks": [
+   {
+    "epoch_s": 17.660870608,
+    "iters": 98,
+    "iter_ms": 180.2129653877551,
+    "batch_range_ms": 31.98001556122449,
+    "outside_batch_ms": 148.23294982653061,
+    "step_ms": {
+     "upload data to GPU": 0.07242824489795918,
+     "forward": 10.324269530612245,
+     "loss": 0.373782612244898,
+     "backward": 21.076256040816325
+    }
+   },
+   {
+    "epoch_s": 17.647063188,
+    "iters": 98,
+    "iter_ms": 180.07207334693877,
+    "batch_range_ms": 33.72019437755102,
+    "outside_batch_ms": 146.35187896938774,
+    "step_ms": {
+     "upload data to GPU": 0.08202411224489796,
+     "forward": 11.247758571428571,
+     "loss": 0.4329000612244898,
+     "backward": 21.813854653061227
+    }
+   }
+  ],
+  "setup_s": {
+   "Set data loader": 0.980994604,
+   "Set Data Parallelism": 0.50573851,
+   "Sync model parameters": 0.883610378
+  },
+  "library_nvtx": {
+   "ncclAllReduce": {
+    "count": 1368,
+    "total_ms": 60.69
+   },
+   "ncclBroadcast": {
+    "count": 396,
+    "total_ms": 14.36
+   }
+  },
+  "devices": {
+   "0": {
+    "kernel_busy_pct": 32.571163266403794,
+    "compute_busy_pct": 28.69859656694451,
+    "compute_ms_per_iter": 51.71859189795918,
+    "nccl_kernel_ms": 2000.034145
+   },
+   "1": {
+    "kernel_busy_pct": 35.60820382292673,
+    "compute_busy_pct": 27.959914154873015,
+    "compute_ms_per_iter": 50.387390418367346,
+    "nccl_kernel_ms": 2362.488214
+   }
+  },
+  "memcpy": {
+   "HtoD": {
+    "count": 592,
+    "MB": 586.3202209472656,
+    "ms": 72.510085
+   },
+   "DtoH": {
+    "count": 788,
+    "MB": 0.0034942626953125,
+    "ms": 1.086054
+   },
+   "DtoD": {
+    "count": 24820,
+    "MB": 8447.016525268555,
+    "ms": 127.929749
+   }
+  },
+  "mem_peak_MB": null,
+  "gpu_metrics": {
+   "0": {
+    "GPU Active [Throughput %]": 33.11016550872842,
+    "SMs Active [Throughput %]": 25.07009914669294,
+    "SM Issue [Throughput %]": 3.490076837271456,
+    "Tensor Active [Throughput %]": 5.993380783321159,
+    "DRAM Read Bandwidth [Throughput %]": 8.009093637285046,
+    "DRAM Write Bandwidth [Throughput %]": 4.825346673687906,
+    "PCIe RX Throughput [Throughput %]": 2.209923728957516,
+    "PCIe TX Throughput [Throughput %]": 2.9424258381604353
+   },
+   "1": {
+    "GPU Active [Throughput %]": 100.0,
+    "SMs Active [Throughput %]": 24.446075183882858,
+    "SM Issue [Throughput %]": 3.3489442660823183,
+    "Tensor Active [Throughput %]": 5.7011047127237315,
+    "DRAM Read Bandwidth [Throughput %]": 8.009495659854933,
+    "DRAM Write Bandwidth [Throughput %]": 4.858742858437095,
+    "PCIe RX Throughput [Throughput %]": 5.702797737349029,
+    "PCIe TX Throughput [Throughput %]": 3.237402820952737
+   }
+  },
+  "nvidia_smi": null
+ },
+ "ta/ddp/4": {
+  "epoch_window_s": 13.558439833,
+  "ranks": [
+   {
+    "epoch_s": 13.558347426000001,
+    "iters": 98,
+    "iter_ms": 138.3504839387755,
+    "batch_range_ms": 35.097024469387755,
+    "outside_batch_ms": 103.25345946938776,
+    "step_ms": {
+     "upload data to GPU": 0.09595712244897958,
+     "forward": 13.169755153061224,
+     "loss": 0.5042624591836735,
+     "backward": 21.15883351020408
+    }
+   },
+   {
+    "epoch_s": 13.558246313,
+    "iters": 98,
+    "iter_ms": 138.3494521734694,
+    "batch_range_ms": 35.92551729591837,
+    "outside_batch_ms": 102.42393487755102,
+    "step_ms": {
+     "upload data to GPU": 0.09073135714285714,
+     "forward": 12.779059367346939,
+     "loss": 0.4162288775510204,
+     "backward": 22.48168362244898
+    }
+   },
+   {
+    "epoch_s": 13.558245388,
+    "iters": 98,
+    "iter_ms": 138.34944273469387,
+    "batch_range_ms": 34.32821774489796,
+    "outside_batch_ms": 104.02122498979591,
+    "step_ms": {
+     "upload data to GPU": 0.09312669387755101,
+     "forward": 13.7121155,
+     "loss": 0.4233867653061224,
+     "backward": 19.93501005102041
+    }
+   },
+   {
+    "epoch_s": 13.546120768000002,
+    "iters": 98,
+    "iter_ms": 138.22572212244899,
+    "batch_range_ms": 35.99893872448979,
+    "outside_batch_ms": 102.2267833979592,
+    "step_ms": {
+     "upload data to GPU": 0.10627986734693877,
+     "forward": 13.51825407142857,
+     "loss": 0.41502955102040817,
+     "backward": 21.771519959183674
+    }
+   }
+  ],
+  "setup_s": {
+   "Set data loader": 0.990534719,
+   "Set Data Parallelism": 0.965725758,
+   "Sync model parameters": 0.997211303
+  },
+  "library_nvtx": {
+   "ncclAllReduce": {
+    "count": 2736,
+    "total_ms": 153.01
+   },
+   "ncclBroadcast": {
+    "count": 792,
+    "total_ms": 38.93
+   }
+  },
+  "devices": {
+   "0": {
+    "kernel_busy_pct": 33.07675885454512,
+    "compute_busy_pct": 21.423358002668508,
+    "compute_ms_per_iter": 29.639521479591835,
+    "nccl_kernel_ms": 3338.145073
+   },
+   "1": {
+    "kernel_busy_pct": 35.99971284395196,
+    "compute_busy_pct": 22.3633565981544,
+    "compute_ms_per_iter": 30.940022948979593,
+    "nccl_kernel_ms": 3766.002611
+   },
+   "2": {
+    "kernel_busy_pct": 42.73800441180894,
+    "compute_busy_pct": 22.327738967663862,
+    "compute_ms_per_iter": 30.890745448979594,
+    "nccl_kernel_ms": 4749.368581
+   },
+   "3": {
+    "kernel_busy_pct": 39.144743999838646,
+    "compute_busy_pct": 23.46150206941734,
+    "compute_ms_per_iter": 32.45932287755102,
+    "nccl_kernel_ms": 4204.760874
+   }
+  },
+  "memcpy": {
+   "HtoD": {
+    "count": 1184,
+    "MB": 586.3214721679688,
+    "ms": 60.204906
+   },
+   "DtoH": {
+    "count": 1576,
+    "MB": 0.006988525390625,
+    "ms": 2.180973
+   },
+   "DtoD": {
+    "count": 49640,
+    "MB": 16894.03305053711,
+    "ms": 274.526966
+   }
+  },
+  "mem_peak_MB": null,
+  "gpu_metrics": {
+   "0": {
+    "GPU Active [Throughput %]": 33.55631932971442,
+    "SMs Active [Throughput %]": 16.877072515931083,
+    "SM Issue [Throughput %]": 2.470866768940288,
+    "Tensor Active [Throughput %]": 3.8874277200849656,
+    "DRAM Read Bandwidth [Throughput %]": 5.524427661080954,
+    "DRAM Write Bandwidth [Throughput %]": 3.483759145621902,
+    "PCIe RX Throughput [Throughput %]": 2.659141196601369,
+    "PCIe TX Throughput [Throughput %]": 3.4931039060656124
+   },
+   "1": {
+    "GPU Active [Throughput %]": 100.0,
+    "SMs Active [Throughput %]": 16.490054062824985,
+    "SM Issue [Throughput %]": 2.370776572284136,
+    "Tensor Active [Throughput %]": 3.698310260135858,
+    "DRAM Read Bandwidth [Throughput %]": 5.5102852127479105,
+    "DRAM Write Bandwidth [Throughput %]": 3.4691517373122,
+    "PCIe RX Throughput [Throughput %]": 4.953947028757293,
+    "PCIe TX Throughput [Throughput %]": 6.027872225869025
+   },
+   "2": {
+    "GPU Active [Throughput %]": 100.0,
+    "SMs Active [Throughput %]": 16.74089125560538,
+    "SM Issue [Throughput %]": 2.464014928015105,
+    "Tensor Active [Throughput %]": 3.747079301392495,
+    "DRAM Read Bandwidth [Throughput %]": 5.520053988671229,
+    "DRAM Write Bandwidth [Throughput %]": 3.4850719848949727,
+    "PCIe RX Throughput [Throughput %]": 5.027731885768232,
+    "PCIe TX Throughput [Throughput %]": 6.025924887892376
+   },
+   "3": {
+    "GPU Active [Throughput %]": 39.54105603209842,
+    "SMs Active [Throughput %]": 17.984415450314568,
+    "SM Issue [Throughput %]": 2.408591047550209,
+    "Tensor Active [Throughput %]": 3.7234904080895097,
+    "DRAM Read Bandwidth [Throughput %]": 5.477124713275263,
+    "DRAM Write Bandwidth [Throughput %]": 3.4529623920403,
+    "PCIe RX Throughput [Throughput %]": 2.7633479123488933,
+    "PCIe TX Throughput [Throughput %]": 3.485746738160389
+   }
+  },
+  "nvidia_smi": null
+ },
+ "ta/ddp_dali/1": {
+  "epoch_window_s": 10.646229843,
+  "ranks": [
+   {
+    "epoch_s": 10.646229842999999,
+    "iters": 98,
+    "iter_ms": 108.63499839795918,
+    "batch_range_ms": 51.65105758163265,
+    "outside_batch_ms": 56.98394081632653,
+    "step_ms": {
+     "upload data to GPU": 0.0414435306122449,
+     "forward": 12.224575979591837,
+     "loss": 0.5090702346938776,
+     "backward": 38.74911047959184
+    }
+   }
+  ],
+  "setup_s": {
+   "Set data loader": 3.293580934,
+   "Set Data Parallelism": 0.528700442,
+   "Sync model parameters": 0.949191951
+  },
+  "library_nvtx": {
+   "[DALI][Loader] ReadOne": {
+    "count": 49664,
+    "total_ms": 3579.75
+   },
+   "ncclAllReduce": {
+    "count": 684,
+    "total_ms": 3.93
+   },
+   "ncclBroadcast": {
+    "count": 198,
+    "total_ms": 0.57
+   }
+  },
+  "devices": {
+   "0": {
+    "kernel_busy_pct": 91.09320181901317,
+    "compute_busy_pct": 91.09320181901317,
+    "compute_ms_per_iter": 98.95909833673468,
+    "nccl_kernel_ms": 0.0
+   }
+  },
+  "memcpy": {
+   "HtoD": {
+    "count": 50541,
+    "MB": 168.09681701660156,
+    "ms": 71.491381
+   },
+   "DtoH": {
+    "count": 394,
+    "MB": 0.00174713134765625,
+    "ms": 0.585415
+   },
+   "DtoD": {
+    "count": 12410,
+    "MB": 4223.508262634277,
+    "ms": 27.111047
+   }
+  },
+  "mem_peak_MB": null,
+  "gpu_metrics": {
+   "0": {
+    "GPU Active [Throughput %]": 91.91016512934192,
+    "SMs Active [Throughput %]": 82.03716819146737,
+    "SM Issue [Throughput %]": 11.30917134752306,
+    "Tensor Active [Throughput %]": 20.876782326088183,
+    "DRAM Read Bandwidth [Throughput %]": 25.681304127294247,
+    "DRAM Write Bandwidth [Throughput %]": 15.051887058293099,
+    "PCIe RX Throughput [Throughput %]": 1.0987958144690124,
+    "PCIe TX Throughput [Throughput %]": 1.0118821739212114
+   }
+  },
+  "nvidia_smi": null
+ },
+ "ta/ddp_dali/2": {
+  "epoch_window_s": 7.219464685,
+  "ranks": [
+   {
+    "epoch_s": 7.219358929,
+    "iters": 98,
+    "iter_ms": 73.66692784693878,
+    "batch_range_ms": 51.833926142857145,
+    "outside_batch_ms": 21.83300170408163,
+    "step_ms": {
+     "upload data to GPU": 0.08557478571428571,
+     "forward": 19.17389269387755,
+     "loss": 0.6018872244897959,
+     "backward": 31.76437836734694
+    }
+   },
+   {
+    "epoch_s": 7.1949397589999995,
+    "iters": 98,
+    "iter_ms": 73.41775264285714,
+    "batch_range_ms": 55.07132568367347,
+    "outside_batch_ms": 18.346426959183667,
+    "step_ms": {
+     "upload data to GPU": 0.09024722448979591,
+     "forward": 22.747473887755103,
+     "loss": 0.660169193877551,
+     "backward": 31.341487846938772
+    }
+   }
+  ],
+  "setup_s": {
+   "Set data loader": 3.389358758,
+   "Set Data Parallelism": 0.908518547,
+   "Sync model parameters": 1.213225421
+  },
+  "library_nvtx": {
+   "[DALI][Loader] ReadOne": {
+    "count": 49664,
+    "total_ms": 3896.2
+   },
+   "ncclAllReduce": {
+    "count": 1368,
+    "total_ms": 95.99
+   },
+   "ncclBroadcast": {
+    "count": 396,
+    "total_ms": 22.27
+   }
+  },
+  "devices": {
+   "0": {
+    "kernel_busy_pct": 76.35743668714962,
+    "compute_busy_pct": 71.1984042068903,
+    "compute_ms_per_iter": 52.4504453877551,
+    "nccl_kernel_ms": 1391.985536
+   },
+   "1": {
+    "kernel_busy_pct": 81.18215159605009,
+    "compute_busy_pct": 69.20711289551797,
+    "compute_ms_per_iter": 50.98350076530612,
+    "nccl_kernel_ms": 2219.093457
+   }
+  },
+  "memcpy": {
+   "HtoD": {
+    "count": 51418,
+    "MB": 169.23416137695312,
+    "ms": 105.810145
+   },
+   "DtoH": {
+    "count": 788,
+    "MB": 0.0034942626953125,
+    "ms": 1.104524
+   },
+   "DtoD": {
+    "count": 24820,
+    "MB": 8447.016525268555,
+    "ms": 130.40382
+   }
+  },
+  "mem_peak_MB": null,
+  "gpu_metrics": {
+   "0": {
+    "GPU Active [Throughput %]": 77.35375025971328,
+    "SMs Active [Throughput %]": 62.089909273495394,
+    "SM Issue [Throughput %]": 8.636830805457441,
+    "Tensor Active [Throughput %]": 14.921767435417966,
+    "DRAM Read Bandwidth [Throughput %]": 19.352545190110117,
+    "DRAM Write Bandwidth [Throughput %]": 11.64695616039892,
+    "PCIe RX Throughput [Throughput %]": 5.182505713692084,
+    "PCIe TX Throughput [Throughput %]": 5.72550730660018
+   },
+   "1": {
+    "GPU Active [Throughput %]": 100.0,
+    "SMs Active [Throughput %]": 60.401473806687534,
+    "SM Issue [Throughput %]": 8.257625287420007,
+    "Tensor Active [Throughput %]": 14.154181787960217,
+    "DRAM Read Bandwidth [Throughput %]": 19.343061750283958,
+    "DRAM Write Bandwidth [Throughput %]": 11.646785051389312,
+    "PCIe RX Throughput [Throughput %]": 5.232623209685015,
+    "PCIe TX Throughput [Throughput %]": 5.721514253262044
+   }
+  },
+  "nvidia_smi": null
+ },
+ "ta/ddp_dali/4": {
+  "epoch_window_s": 6.722711498,
+  "ranks": [
+   {
+    "epoch_s": 6.721542352,
+    "iters": 98,
+    "iter_ms": 68.58716685714286,
+    "batch_range_ms": 53.90994408163265,
+    "outside_batch_ms": 14.67722277551021,
+    "step_ms": {
+     "upload data to GPU": 0.09713213265306123,
+     "forward": 23.28726275510204,
+     "loss": 0.5273888469387755,
+     "backward": 29.76515763265306
+    }
+   },
+   {
+    "epoch_s": 6.722680553,
+    "iters": 98,
+    "iter_ms": 68.59878115306122,
+    "batch_range_ms": 45.76087402040816,
+    "outside_batch_ms": 22.837907132653065,
+    "step_ms": {
+     "upload data to GPU": 0.06655022448979592,
+     "forward": 18.631146826530614,
+     "loss": 0.4999061836734694,
+     "backward": 26.395537734693878
+    }
+   },
+   {
+    "epoch_s": 6.7216404789999995,
+    "iters": 98,
+    "iter_ms": 68.58816815306122,
+    "batch_range_ms": 53.62511014285714,
+    "outside_batch_ms": 14.96305801020408,
+    "step_ms": {
+     "upload data to GPU": 0.08028178571428571,
+     "forward": 23.34323180612245,
+     "loss": 0.5522838571428571,
+     "backward": 29.44669420408163
+    }
+   },
+   {
+    "epoch_s": 6.7057442510000005,
+    "iters": 98,
+    "iter_ms": 68.42596174489796,
+    "batch_range_ms": 55.28733734693878,
+    "outside_batch_ms": 13.138624397959184,
+    "step_ms": {
+     "upload data to GPU": 0.09362048979591837,
+     "forward": 24.433034755102042,
+     "loss": 0.605104775510204,
+     "backward": 29.909328408163265
+    }
+   }
+  ],
+  "setup_s": {
+   "Set data loader": 3.653889507,
+   "Set Data Parallelism": 1.064506649,
+   "Sync model parameters": 1.071631351
+  },
+  "library_nvtx": {
+   "[DALI][Loader] ReadOne": {
+    "count": 49664,
+    "total_ms": 4389.74
+   },
+   "ncclAllReduce": {
+    "count": 2736,
+    "total_ms": 206.96
+   },
+   "ncclBroadcast": {
+    "count": 792,
+    "total_ms": 51.4
+   }
+  },
+  "devices": {
+   "0": {
+    "kernel_busy_pct": 62.712439947099455,
+    "compute_busy_pct": 44.66505242554736,
+    "compute_ms_per_iter": 30.63982260204082,
+    "nccl_kernel_ms": 2989.360218
+   },
+   "1": {
+    "kernel_busy_pct": 75.58044688533204,
+    "compute_busy_pct": 44.4582210301478,
+    "compute_ms_per_iter": 30.497938132653058,
+    "nccl_kernel_ms": 4064.514701
+   },
+   "2": {
+    "kernel_busy_pct": 66.92289647322302,
+    "compute_busy_pct": 46.932280984222594,
+    "compute_ms_per_iter": 32.195120918367344,
+    "nccl_kernel_ms": 3354.982726
+   },
+   "3": {
+    "kernel_busy_pct": 67.1095915144089,
+    "compute_busy_pct": 47.716382949860744,
+    "compute_ms_per_iter": 32.733007785714285,
+    "nccl_kernel_ms": 3339.569817
+   }
+  },
+  "memcpy": {
+   "HtoD": {
+    "count": 53174,
+    "MB": 171.50983047485352,
+    "ms": 57.850729
+   },
+   "DtoH": {
+    "count": 1576,
+    "MB": 0.006988525390625,
+    "ms": 2.194064
+   },
+   "DtoD": {
+    "count": 49640,
+    "MB": 16894.03305053711,
+    "ms": 269.765029
+   }
+  },
+  "mem_peak_MB": null,
+  "gpu_metrics": {
+   "0": {
+    "GPU Active [Throughput %]": 63.69893048923795,
+    "SMs Active [Throughput %]": 33.67275053178039,
+    "SM Issue [Throughput %]": 4.881862941972719,
+    "Tensor Active [Throughput %]": 7.6957323694349,
+    "DRAM Read Bandwidth [Throughput %]": 10.995507757299894,
+    "DRAM Write Bandwidth [Throughput %]": 6.939652223065138,
+    "PCIe RX Throughput [Throughput %]": 5.281955166822854,
+    "PCIe TX Throughput [Throughput %]": 6.013789102592709
+   },
+   "1": {
+    "GPU Active [Throughput %]": 100.0,
+    "SMs Active [Throughput %]": 33.423273733376966,
+    "SM Issue [Throughput %]": 4.836447207925505,
+    "Tensor Active [Throughput %]": 7.4692827179960135,
+    "DRAM Read Bandwidth [Throughput %]": 11.028114122512124,
+    "DRAM Write Bandwidth [Throughput %]": 7.009549876535864,
+    "PCIe RX Throughput [Throughput %]": 11.863252313093149,
+    "PCIe TX Throughput [Throughput %]": 11.319266355279208
+   },
+   "2": {
+    "GPU Active [Throughput %]": 100.0,
+    "SMs Active [Throughput %]": 33.51839290761153,
+    "SM Issue [Throughput %]": 4.825695033245571,
+    "Tensor Active [Throughput %]": 7.5838428012554475,
+    "DRAM Read Bandwidth [Throughput %]": 10.991045264551445,
+    "DRAM Write Bandwidth [Throughput %]": 6.944456840257635,
+    "PCIe RX Throughput [Throughput %]": 9.84895949544082,
+    "PCIe TX Throughput [Throughput %]": 11.1148199384176
+   },
+   "3": {
+    "GPU Active [Throughput %]": 67.95232570247073,
+    "SMs Active [Throughput %]": 35.80803843693754,
+    "SM Issue [Throughput %]": 4.810403558094218,
+    "Tensor Active [Throughput %]": 7.5487527332768085,
+    "DRAM Read Bandwidth [Throughput %]": 10.948101209335535,
+    "DRAM Write Bandwidth [Throughput %]": 6.93209573534443,
+    "PCIe RX Throughput [Throughput %]": 5.394082734615556,
+    "PCIe TX Throughput [Throughput %]": 5.988278519047406
+   }
+  },
+  "nvidia_smi": null
+ },
+ "ours/dp/1": {
+  "epoch_window_s": 27.794402005,
+  "ranks": [
+   {
+    "epoch_s": 27.794402005,
+    "iters": 98,
+    "iter_ms": 283.61634698979594,
+    "batch_range_ms": 24.711934530612247,
+    "outside_batch_ms": 258.9044124591837,
+    "step_ms": {
+     "upload data to GPU": 0.12933536734693876,
+     "forward": 9.178673989795918,
+     "loss": 0.435334193877551,
+     "backward": 14.793444397959185
+    }
+   }
+  ],
+  "setup_s": {
+   "Set data loader": 0.962439799,
+   "Set Data Parallelism": 0.339547097,
+   "Sync model parameters": null
+  },
+  "library_nvtx": {},
+  "devices": {
+   "0": {
+    "kernel_busy_pct": 37.911128000179474,
+    "compute_busy_pct": 37.911128000179474,
+    "compute_ms_per_iter": 107.5221563367347,
+    "nccl_kernel_ms": 0.0
+   }
+  },
+  "memcpy": {
+   "HtoD": {
+    "count": 294,
+    "MB": 586.3193435668945,
+    "ms": 66.166335
+   },
+   "DtoH": {
+    "count": 392,
+    "MB": 0.001495361328125,
+    "ms": 0.55019
+   },
+   "DtoD": {
+    "count": 62,
+    "MB": 42.625282287597656,
+    "ms": 0.209333
+   }
+  },
+  "mem_peak_MB": {
+   "0": 3544.3025817871094
+  },
+  "gpu_metrics": null,
+  "nvidia_smi": {
+   "0": {
+    "util_gpu_pct": 39.7410071942446,
+    "util_mem_pct": 20.51798561151079,
+    "mem_used_max_MB": 3854.0,
+    "samples": 139
+   }
+  }
+ },
+ "ours/dp/2": {
+  "epoch_window_s": 33.409974812,
+  "ranks": [
+   {
+    "epoch_s": 33.409974812,
+    "iters": 98,
+    "iter_ms": 340.9181103265306,
+    "batch_range_ms": 80.15205821428572,
+    "outside_batch_ms": 260.7660521122449,
+    "step_ms": {
+     "upload data to GPU": 0.14536397959183675,
+     "forward": 58.89911147959184,
+     "loss": 0.9193097040816327,
+     "backward": 19.987772887755103
+    }
+   }
+  ],
+  "setup_s": {
+   "Set data loader": 0.959872982,
+   "Set Data Parallelism": 0.358908203,
+   "Sync model parameters": null
+  },
+  "library_nvtx": {
+   "ncclCommInitAll": {
+    "count": 1,
+    "total_ms": 415.98
+   },
+   "ncclGroupEnd": {
+    "count": 1079,
+    "total_ms": 335.81
+   },
+   "ncclBroadcast": {
+    "count": 1176,
+    "total_ms": 5.62
+   },
+   "ncclReduce": {
+    "count": 980,
+    "total_ms": 5.29
+   },
+   "ncclGroupStart": {
+    "count": 1079,
+    "total_ms": 1.71
+   }
+  },
+  "devices": {
+   "0": {
+    "kernel_busy_pct": 45.893698703097364,
+    "compute_busy_pct": 15.015207072823578,
+    "compute_ms_per_iter": 51.18956021428572,
+    "nccl_kernel_ms": 10316.496276
+   },
+   "1": {
+    "kernel_busy_pct": 45.68950493646364,
+    "compute_busy_pct": 14.83003092603469,
+    "compute_ms_per_iter": 50.55826119387755,
+    "nccl_kernel_ms": 10310.142494
+   }
+  },
+  "memcpy": {
+   "HtoD": {
+    "count": 610,
+    "MB": 881.2133865356445,
+    "ms": 75.021041
+   },
+   "DtoH": {
+    "count": 686,
+    "MB": 294.8775939941406,
+    "ms": 14.133984
+   },
+   "DtoD": {
+    "count": 160,
+    "MB": 43.578956604003906,
+    "ms": 0.328288
+   }
+  },
+  "mem_peak_MB": {
+   "0": 1939.1102495193481,
+   "1": 1915.0740585327148
+  },
+  "gpu_metrics": null,
+  "nvidia_smi": {
+   "0": {
+    "util_gpu_pct": 44.74850299401198,
+    "util_mem_pct": 7.0119760479041915,
+    "mem_used_max_MB": 2312.0,
+    "samples": 167
+   },
+   "1": {
+    "util_gpu_pct": 42.81437125748503,
+    "util_mem_pct": 9.221556886227544,
+    "mem_used_max_MB": 2304.0,
+    "samples": 167
+   }
+  }
+ },
+ "ours/ddp/1": {
+  "epoch_window_s": 27.678757367,
+  "ranks": [
+   {
+    "epoch_s": 27.678757367,
+    "iters": 98,
+    "iter_ms": 282.4362996632653,
+    "batch_range_ms": 29.963830908163263,
+    "outside_batch_ms": 252.47246875510203,
+    "step_ms": {
+     "upload data to GPU": 0.08365537755102041,
+     "forward": 9.808347908163265,
+     "loss": 0.4064916836734694,
+     "backward": 19.486584540816327
+    }
+   }
+  ],
+  "setup_s": {
+   "Set data loader": 0.953762167,
+   "Set Data Parallelism": 0.521118878,
+   "Sync model parameters": 0.126084632
+  },
+  "library_nvtx": {
+   "ncclAllReduce": {
+    "count": 684,
+    "total_ms": 3.1
+   },
+   "ncclBroadcast": {
+    "count": 198,
+    "total_ms": 1.38
+   }
+  },
+  "devices": {
+   "0": {
+    "kernel_busy_pct": 38.20308884461345,
+    "compute_busy_pct": 38.20308884461345,
+    "compute_ms_per_iter": 107.8993904897959,
+    "nccl_kernel_ms": 0.0
+   }
+  },
+  "memcpy": {
+   "HtoD": {
+    "count": 296,
+    "MB": 586.3195953369141,
+    "ms": 66.14513
+   },
+   "DtoH": {
+    "count": 394,
+    "MB": 0.00174713134765625,
+    "ms": 0.544965
+   },
+   "DtoD": {
+    "count": 12410,
+    "MB": 4223.508262634277,
+    "ms": 27.746465
+   }
+  },
+  "mem_peak_MB": {
+   "0": 3662.33389377594
+  },
+  "gpu_metrics": null,
+  "nvidia_smi": {
+   "0": {
+    "util_gpu_pct": 37.27536231884058,
+    "util_mem_pct": 18.384057971014492,
+    "mem_used_max_MB": 4022.0,
+    "samples": 138
+   }
+  }
+ },
+ "ours/ddp/2": {
+  "epoch_window_s": 18.23315699,
+  "ranks": [
+   {
+    "epoch_s": 18.23315699,
+    "iters": 98,
+    "iter_ms": 186.05262234693876,
+    "batch_range_ms": 30.907836142857143,
+    "outside_batch_ms": 155.1447862040816,
+    "step_ms": {
+     "upload data to GPU": 0.09508662244897959,
+     "forward": 10.779742275510205,
+     "loss": 0.4444543163265306,
+     "backward": 19.401789234693876
+    }
+   },
+   {
+    "epoch_s": 18.224461226,
+    "iters": 98,
+    "iter_ms": 185.96389006122448,
+    "batch_range_ms": 24.90048137755102,
+    "outside_batch_ms": 161.06340868367346,
+    "step_ms": {
+     "upload data to GPU": 0.07394432653061225,
+     "forward": 9.910102795918368,
+     "loss": 0.3793391428571428,
+     "backward": 14.408503989795918
+    }
+   }
+  ],
+  "setup_s": {
+   "Set data loader": 0.952690363,
+   "Set Data Parallelism": 0.727618488,
+   "Sync model parameters": 0.161704685
+  },
+  "library_nvtx": {
+   "ncclAllReduce": {
+    "count": 1368,
+    "total_ms": 50.2
+   },
+   "ncclBroadcast": {
+    "count": 396,
+    "total_ms": 17.5
+   }
+  },
+  "devices": {
+   "0": {
+    "kernel_busy_pct": 51.66943004531219,
+    "compute_busy_pct": 37.61852540819921,
+    "compute_ms_per_iter": 69.99025301020409,
+    "nccl_kernel_ms": 6889.471269
+   },
+   "1": {
+    "kernel_busy_pct": 46.91309922188083,
+    "compute_busy_pct": 39.16306008836707,
+    "compute_ms_per_iter": 72.8639002857143,
+    "nccl_kernel_ms": 4397.304463
+   }
+  },
+  "memcpy": {
+   "HtoD": {
+    "count": 592,
+    "MB": 586.3202209472656,
+    "ms": 59.283745
+   },
+   "DtoH": {
+    "count": 788,
+    "MB": 0.0034942626953125,
+    "ms": 0.98103
+   },
+   "DtoD": {
+    "count": 24820,
+    "MB": 8447.016525268555,
+    "ms": 831.855621
+   }
+  },
+  "mem_peak_MB": {
+   "0": 1957.112211227417,
+   "1": 1957.0779762268066
+  },
+  "gpu_metrics": null,
+  "nvidia_smi": {
+   "0": {
+    "util_gpu_pct": 52.494505494505496,
+    "util_mem_pct": 14.736263736263735,
+    "mem_used_max_MB": 2378.0,
+    "samples": 91
+   },
+   "1": {
+    "util_gpu_pct": 43.43956043956044,
+    "util_mem_pct": 14.175824175824175,
+    "mem_used_max_MB": 2378.0,
+    "samples": 91
+   }
+  }
+ },
+ "ours/ddp_dali/1": {
+  "epoch_window_s": 11.670200977,
+  "ranks": [
+   {
+    "epoch_s": 11.670200977,
+    "iters": 98,
+    "iter_ms": 119.08368343877551,
+    "batch_range_ms": 29.46531458163265,
+    "outside_batch_ms": 89.61836885714285,
+    "step_ms": {
+     "upload data to GPU": 0.02896148979591837,
+     "forward": 8.588569448979593,
+     "loss": 0.29360035714285715,
+     "backward": 20.47917736734694
+    }
+   }
+  ],
+  "setup_s": {
+   "Set data loader": 1.194426596,
+   "Set Data Parallelism": 0.331099951,
+   "Sync model parameters": 0.118528137
+  },
+  "library_nvtx": {
+   "[DALI][Loader] ReadOne": {
+    "count": 49664,
+    "total_ms": 3167.59
+   },
+   "ncclAllReduce": {
+    "count": 684,
+    "total_ms": 3.0
+   },
+   "ncclBroadcast": {
+    "count": 198,
+    "total_ms": 0.44
+   }
+  },
+  "devices": {
+   "0": {
+    "kernel_busy_pct": 93.87890090832323,
+    "compute_busy_pct": 93.87890090832323,
+    "compute_ms_per_iter": 111.79445317346939,
+    "nccl_kernel_ms": 0.0
+   }
+  },
+  "memcpy": {
+   "HtoD": {
+    "count": 50638,
+    "MB": 158.19654846191406,
+    "ms": 66.359942
+   },
+   "DtoH": {
+    "count": 394,
+    "MB": 0.00174713134765625,
+    "ms": 0.541181
+   },
+   "DtoD": {
+    "count": 12410,
+    "MB": 4223.508262634277,
+    "ms": 29.893344
+   }
+  },
+  "mem_peak_MB": {
+   "0": 4086.3305950164795
+  },
+  "gpu_metrics": null,
+  "nvidia_smi": {
+   "0": {
+    "util_gpu_pct": 91.62068965517241,
+    "util_mem_pct": 45.3448275862069,
+    "mem_used_max_MB": 4552.0,
+    "samples": 58
+   }
+  }
+ },
+ "ours/ddp_dali/2": {
+  "epoch_window_s": 9.666662539,
+  "ranks": [
+   {
+    "epoch_s": 9.666560853,
+    "iters": 98,
+    "iter_ms": 98.63837605102042,
+    "batch_range_ms": 33.99746185714286,
+    "outside_batch_ms": 64.64091419387756,
+    "step_ms": {
+     "upload data to GPU": 0.03266792857142857,
+     "forward": 11.15086975510204,
+     "loss": 0.3808470102040817,
+     "backward": 22.351115081632653
+    }
+   },
+   {
+    "epoch_s": 9.658540898,
+    "iters": 98,
+    "iter_ms": 98.5565397755102,
+    "batch_range_ms": 33.80694469387755,
+    "outside_batch_ms": 64.74959508163266,
+    "step_ms": {
+     "upload data to GPU": 0.03106269387755102,
+     "forward": 11.588406775510204,
+     "loss": 0.328238193877551,
+     "backward": 21.78004537755102
+    }
+   }
+  ],
+  "setup_s": {
+   "Set data loader": 1.219729567,
+   "Set Data Parallelism": 0.440061976,
+   "Sync model parameters": 0.169457347
+  },
+  "library_nvtx": {
+   "[DALI][Loader] ReadOne": {
+    "count": 49664,
+    "total_ms": 2944.46
+   },
+   "ncclAllReduce": {
+    "count": 1368,
+    "total_ms": 55.55
+   },
+   "ncclBroadcast": {
+    "count": 396,
+    "total_ms": 10.2
+   }
+  },
+  "devices": {
+   "0": {
+    "kernel_busy_pct": 89.631882276262,
+    "compute_busy_pct": 72.36314975078908,
+    "compute_ms_per_iter": 71.37858662244898,
+    "nccl_kernel_ms": 5060.796167
+   },
+   "1": {
+    "kernel_busy_pct": 90.34889169621813,
+    "compute_busy_pct": 77.3344632218158,
+    "compute_ms_per_iter": 76.28226108163265,
+    "nccl_kernel_ms": 4473.670392
+   }
+  },
+  "memcpy": {
+   "HtoD": {
+    "count": 51612,
+    "MB": 158.19717407226562,
+    "ms": 271.746266
+   },
+   "DtoH": {
+    "count": 788,
+    "MB": 0.0034942626953125,
+    "ms": 0.948156
+   },
+   "DtoD": {
+    "count": 24820,
+    "MB": 8447.016525268555,
+    "ms": 857.383625
+   }
+  },
+  "mem_peak_MB": {
+   "0": 2389.1134099960327,
+   "1": 2389.07799243927
+  },
+  "gpu_metrics": null,
+  "nvidia_smi": {
+   "0": {
+    "util_gpu_pct": 90.875,
+    "util_mem_pct": 28.583333333333332,
+    "mem_used_max_MB": 2748.0,
+    "samples": 48
+   },
+   "1": {
+    "util_gpu_pct": 89.41666666666667,
+    "util_mem_pct": 28.020833333333332,
+    "mem_used_max_MB": 2748.0,
+    "samples": 48
+   }
+  }
+ }
+}

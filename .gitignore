@@ -13,3 +13,10 @@ nsight_logs/*
 old*
 
 *TA_run*
+report/build/
+.DS_Store
+
+# Keep small run logs and nsys stats CSVs as evidence for the report (large .nsys-rep/.sqlite stay local)
+!logs/*.out
+!logs/nvidia_smi.csv
+!nsight_logs/stats/

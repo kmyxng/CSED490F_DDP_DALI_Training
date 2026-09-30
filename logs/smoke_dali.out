@@ -1,0 +1,11 @@
+==> Prepare data..
+==> Prepare model..
+==> Sync model parameters
+==> Start training..
+Epoch: [0][50/98]	Time 0.090 (0.098)	Data 0.000 (0.000)	Loss 1.6445 (1.9991)	Prec@1 41.016 (30.113)	Prec@5 87.695 (80.258)
+Epoch 0 : Loss 1.7675 Prec@1 36.916 Prec@5 85.462
+Loss 1.5640 Prec@1 47.600 Prec@5 93.600
+==> Prepare data..
+==> Prepare model..
+==> Sync model parameters
+==> Start training..

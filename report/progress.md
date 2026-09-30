@@ -36,14 +36,13 @@
 ### Phase D. 분석 & 보고서
 
 - [x] TA 제공 `.nsys-rep` 다운로드 (gdown) → `nsight_logs/ta/{dp,ddp,ddp_dali}/gpu_{1,2,4}.nsys-rep` (9개, RTX 3090). spec에는 DP만 준다고 되어 있었으나 DDP/DDP+DALI도 포함
-- [ ] **To-do (GUI 수작업)**: TA 로그 9개를 `nsys-ui`에서 열어 **File → Export → SQLite**로 `nsight_logs/ta/{dp,ddp,ddp_dali}/gpu_{1,2,4}.sqlite`에 저장 → 그 뒤 요약 표 계산
-  - Mac용 Nsight Systems에는 명령줄 `nsys stats`/`export`가 없음 (앱 안 `nsys`는 Linux용). 인스턴스는 destroy됨
-  - 대안: Docker Desktop을 켜고 Linux용 `nsight-systems-cli` 컨테이너에서 `nsys stats` 실행
-- [ ] **To-do (GUI 수작업)**: 보고서용 타임라인 스크린샷 (DP / DDP / DDP+DALI, 2 GPU, NVTX + CUDA 행)
+- [x] TA 로그 9개 GUI export → `nsight_logs/ta/*/gpu_{1,2,4}.sqlite`
+- [ ] (선택) 보고서용 타임라인 스크린샷 (DP / DDP / DDP+DALI, 2 GPU, NVTX + CUDA 행) — 현재 보고서에는 없음. 4쪽 끝에 반 쪽 여유 있음
 - [x] 로컬 Nsight Systems 설치 — 2026.5.1 (인스턴스 2025.5.1 이상)
-- [ ] 수치 추출 & 비교표 작성
-- [ ] 보고서 작성 (≤ 4 pages, 11pt) → `lab3_DDP_DALI_team{N}.pdf`
-- [ ] 제출 zip 생성 → PLMS 업로드
+- [x] 수치 추출 & 비교표 작성 — `report/analyze.py` → `report/results.json` (NVTX `Epoch 0` 구간 기준)
+- [x] 보고서 작성 — 영어 `report/lab3_report.tex`, 한국어 `report/lab3_report_ko.tex` (공용: `report/tex/`), XeLaTeX, 11pt, 각 4쪽. 완성본 `report/lab3_DDP_DALI_team4_{en,ko}.pdf`
+- [x] 제출 zip 생성 — `bash report/make_submission.sh 4 [en|ko]` → `report/build/lab3_DDP_DALI_team4.zip` (handler/, launch.sh, PDF)
+- [ ] 팀 검토 후 제출 언어(영어/한국어) 결정 → PLMS 업로드 (마감 10/4 23:59 KST)
 
 ---
 
@@ -281,7 +280,7 @@ lab3_DDP_DALI_team{N}.zip
 - [x] DDP/DALI의 train batch → per-GPU `512 / world_size` (global batch 512 유지). 보고서에 근거 명시
 - [x] DALI seed를 shard마다 다르게 할지 → `12345 + shard_id` 로 결정 (rank별 augmentation 난수열 분리)
 - [x] nsys GPU metrics 옵션 → **사용 불가** (`ERR_NVGPUCTRPERM`, 컨테이너 권한 부족). 대신 `nvidia-smi` 0.2초 간격 로그(`logs/nvidia_smi.csv`)로 GPU/Mem util 수집
-- [ ] 팀 번호
+- [x] 팀 번호 → 4
 
 ## 작업 로그
 
@@ -324,3 +323,11 @@ lab3_DDP_DALI_team{N}.zip
   - nsys 켜고 실행하면 스모크 테스트보다 느림 (DDP 2 GPU 0.181 → 0.192 s)
   - `nsys stats` CSV (nvtx_sum, cuda_gpu_kern_sum, cuda_gpu_mem_time_sum, cuda_gpu_mem_size_sum, cuda_api_sum) → `nsight_logs/stats/`
 - **2026-09-29**: Vast.ai 인스턴스 destroy 확인 (접속 거부). TA 로그 9개 다운로드 완료. 로컬에서 TA 로그를 CSV로 바꾸는 작업은 GUI export로 남겨 둠 (To-do)
+- **2026-09-30**: Phase D 분석 & 보고서 완료
+  - `report/analyze.py`: 15개 로그(TA 9 + 우리 6)의 NVTX 분해(forward/backward/batch 밖), 연산 커널 busy %, NCCL 커널 시간, memcpy, 메모리 peak, TA GPU metrics(SMs Active, DRAM R/W), nvidia-smi를 `results.json`으로 저장
+  - 핵심 결과 (TA, epoch 1/2/4 GPU): DP 30.4 → 32.2 → 34.4 s, DDP 32.6 → 17.7 → 13.6 s, DDP+DALI 10.6 → 7.2 → 6.7 s
+  - 해석: DP는 단일 프로세스 로더(batch 밖 약 230–280 ms) + 매 step 입력 분배·모델 복제·출력 수집 때문에 GPU 늘수록 느려짐. DDP는 프로세스별 로딩으로 batch 밖 시간이 1/N에 가깝게 줄어듦. DALI는 로더 병목을 없애 SMs Active 82% (1 GPU), 그 뒤 병목은 CPU 쪽 커널 실행 준비(batch 구간 약 52 ms로 일정)
+  - 확인한 주의점: TA 로그 `GPU Active`가 일부 GPU에서 100% 고정 → `SMs Active` 사용. `nvidia-smi` GPU util은 NCCL 대기 커널까지 셈 (DP 2 GPU: 44% vs 연산 15%). DDP는 매 forward에 BatchNorm 버퍼를 broadcast함 (`ncclBroadcast` 전부 `forward` 안)
+  - 그래프: pgfplots, 기본 팔레트 1–3번 색 (문서에 적힌 검증 결과 사용 — Node.js가 없어 검증 스크립트는 못 돌림), 같은 수치를 표 1로도 제공
+- **2026-09-30**: 보고서에 작성자(20262756 양광모, 20262346 곽찬영)와 Team 4 명시, 한국어 버전 추가, 문단 간격 확대 (parskip 2pt → 7pt). 두 버전 모두 4쪽
+  - git에는 원본·스크립트·완성본 PDF·작은 로그(`logs/*.out`, `logs/nvidia_smi.csv`, `nsight_logs/stats/`)만 올림. `.nsys-rep`/`.sqlite`(8.4GB)와 `report/build/`는 로컬에만 있음

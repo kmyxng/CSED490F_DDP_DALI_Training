@@ -1,0 +1,52 @@
+[System] check instance environment...
+[Check] hostname : 69e11eb65ecf
+[Check] date     : Tue Sep 29 14:16:39 UTC 2026
+[Check] GPU list
+GPU 0: NVIDIA GeForce RTX 3090 (UUID: GPU-7a361b50-a9c8-e9a3-352a-3f05f561d571)
+GPU 1: NVIDIA GeForce RTX 3090 (UUID: GPU-5015b3c8-dd68-55e2-46db-45f5398b8de4)
+[Check] driver version: 580.178.04
+/opt/conda/lib/python3.11/site-packages/torch/cuda/__init__.py:58: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+[Check] torch 2.4.1+cu118 (CUDA 11.8)
+[Check] cuda:0 NVIDIA GeForce RTX 3090 (sm_86) OK
+[Check] cuda:1 NVIDIA GeForce RTX 3090 (sm_86) OK
+/opt/conda/lib/python3.11/site-packages/torch/cuda/__init__.py:58: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+[Check] GPU0 <-> GPU1 copy OK (P2P access: False)
+[Check] NVIDIA Nsight Systems version 2025.5.1.121-255136380782v0
+[Check] dataset: dataset/cifar10
+[Check] dataset: dataset/cifar10_images
+[Check] shared memory: 31G
+[System] check instance environment finished
+[System] run train_cifar.py with 'run_dp.sh'...
+/opt/conda/lib/python3.11/site-packages/torch/cuda/__init__.py:58: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/workspace/CSED490F_DDP_DALI_Training/handler/DP/cifar10_loader.py:106: SyntaxWarning: assertion is always true, perhaps remove parentheses?
+  assert(valid_batch > 0, "validation set follows the batch size of test set, which is 0")
+==> Prepare data..
+==> Prepare model..
+==> Start training..
+Epoch: [0][50/98]	Time 0.280 (0.288)	Data 0.168 (0.171)	Loss 0.0030 (0.0039)	Prec@1 42.969 (30.625)	Prec@5 90.820 (80.199)
+Epoch 0 : Loss 0.0034 Prec@1 38.784 Prec@5 86.122
+Loss 0.0025 Prec@1 55.220 Prec@5 94.980
+Collecting data...
+Generating '/tmp/nsys-report-7d9b.qdstrm'
+[1/1] [0%                          ] gpu_1.nsys-rep[1/1] [0%                          ] gpu_1.nsys-rep[1/1] [0%                          ] gpu_1.nsys-rep[1/1] [5%                          ] gpu_1.nsys-rep[1/1] [12%                         ] gpu_1.nsys-rep[1/1] [==21%                       ] gpu_1.nsys-rep[1/1] [=====30%                    ] gpu_1.nsys-rep[1/1] [=======39%                  ] gpu_1.nsys-rep[1/1] [==========48%               ] gpu_1.nsys-rep[1/1] [============57%             ] gpu_1.nsys-rep[1/1] [===============66%          ] gpu_1.nsys-rep[1/1] [=================73%        ] gpu_1.nsys-rep[1/1] [========================100%] gpu_1.nsys-rep[1/1] [========================100%] gpu_1.nsys-rep
+Generated:
+	/workspace/CSED490F_DDP_DALI_Training/nsight_logs/dp_20260929_141639/gpu_1.nsys-rep
+/opt/conda/lib/python3.11/site-packages/torch/cuda/__init__.py:58: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+==> Prepare data..
+==> Prepare model..
+==> Start training..
+Epoch: [0][50/98]	Time 0.342 (0.353)	Data 0.180 (0.171)	Loss 0.0031 (0.0040)	Prec@1 42.773 (29.500)	Prec@5 88.086 (80.305)
+Epoch 0 : Loss 0.0035 Prec@1 36.012 Prec@5 85.512
+Loss 0.0028 Prec@1 49.220 Prec@5 93.460
+Collecting data...
+Generating '/tmp/nsys-report-d1c7.qdstrm'
+[1/1] [0%                          ] gpu_2.nsys-rep[1/1] [0%                          ] gpu_2.nsys-rep[1/1] [0%                          ] gpu_2.nsys-rep[1/1] [7%                          ] gpu_2.nsys-rep[1/1] [9%                          ] gpu_2.nsys-rep[1/1] [12%                         ] gpu_2.nsys-rep[1/1] [=16%                        ] gpu_2.nsys-rep[1/1] [==20%                       ] gpu_2.nsys-rep[1/1] [===24%                      ] gpu_2.nsys-rep[1/1] [====28%                     ] gpu_2.nsys-rep[1/1] [=====32%                    ] gpu_2.nsys-rep[1/1] [======35%                   ] gpu_2.nsys-rep[1/1] [=======39%                  ] gpu_2.nsys-rep[1/1] [=========43%                ] gpu_2.nsys-rep[1/1] [==========47%               ] gpu_2.nsys-rep[1/1] [===========51%              ] gpu_2.nsys-rep[1/1] [============55%             ] gpu_2.nsys-rep[1/1] [=============59%            ] gpu_2.nsys-rep[1/1] [==============63%           ] gpu_2.nsys-rep[1/1] [===============67%          ] gpu_2.nsys-rep[1/1] [================71%         ] gpu_2.nsys-rep[1/1] [=================72%        ] gpu_2.nsys-rep[1/1] [========================100%] gpu_2.nsys-rep[1/1] [========================100%] gpu_2.nsys-rep
+Generated:
+	/workspace/CSED490F_DDP_DALI_Training/nsight_logs/dp_20260929_141639/gpu_2.nsys-rep
+[System] train ended
+Tue Sep 29 14:18:19 UTC 2026
+##### END #####

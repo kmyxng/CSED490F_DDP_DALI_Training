@@ -1,0 +1,29 @@
+% SMs Active and epoch time vs. #GPU (TA logs). Labels: \LblGPU, \LblSMs, \LblEpoch
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.43\linewidth, height=4.3cm, xmode=log, log basis x=2,
+  xtick={1,2,4}, xticklabels={1,2,4}, xmin=0.85, xmax=5.6, ymin=0, ymax=100,
+  xlabel={\LblGPU}, ylabel={\LblSMs},
+  tick label style={font=\footnotesize}, label style={font=\footnotesize},
+  axis x line*=bottom, axis y line*=left, ymajorgrids, grid style={grid}, major tick length=0pt,
+  every axis plot/.append style={line width=1.5pt, mark size=2.4pt}, clip=false,
+]
+\addplot[s1, mark=*] coordinates {(1,28.0) (2,14.1) (4,6.8)} node[right, font=\footnotesize, text=ink2] {DP};
+\addplot[s2, mark=*] coordinates {(1,26.3) (2,24.8) (4,17.0)} node[right, font=\footnotesize, text=ink2] {DDP};
+\addplot[s3, mark=*] coordinates {(1,82.0) (2,61.2) (4,34.1)} node[right, font=\footnotesize, text=ink2] {DDP+DALI};
+\end{axis}
+\end{tikzpicture}\hfill
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.43\linewidth, height=4.3cm, xmode=log, log basis x=2,
+  xtick={1,2,4}, xticklabels={1,2,4}, xmin=0.85, xmax=5.6, ymin=0, ymax=36,
+  xlabel={\LblGPU}, ylabel={\LblEpoch},
+  tick label style={font=\footnotesize}, label style={font=\footnotesize},
+  axis x line*=bottom, axis y line*=left, ymajorgrids, grid style={grid}, major tick length=0pt,
+  every axis plot/.append style={line width=1.5pt, mark size=2.4pt}, clip=false,
+]
+\addplot[s1, mark=*] coordinates {(1,30.4) (2,32.2) (4,34.4)} node[right, font=\footnotesize, text=ink2] {DP};
+\addplot[s2, mark=*] coordinates {(1,32.6) (2,17.7) (4,13.6)} node[right, font=\footnotesize, text=ink2] {DDP};
+\addplot[s3, mark=*] coordinates {(1,10.6) (2,7.2) (4,6.7)} node[right, font=\footnotesize, text=ink2] {DDP+DALI};
+\end{axis}
+\end{tikzpicture}

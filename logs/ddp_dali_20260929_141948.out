@@ -1,0 +1,68 @@
+[System] check instance environment...
+[Check] hostname : 69e11eb65ecf
+[Check] date     : Tue Sep 29 14:19:48 UTC 2026
+[Check] GPU list
+GPU 0: NVIDIA GeForce RTX 3090 (UUID: GPU-7a361b50-a9c8-e9a3-352a-3f05f561d571)
+GPU 1: NVIDIA GeForce RTX 3090 (UUID: GPU-5015b3c8-dd68-55e2-46db-45f5398b8de4)
+[Check] driver version: 580.178.04
+/opt/conda/lib/python3.11/site-packages/torch/cuda/__init__.py:58: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+[Check] torch 2.4.1+cu118 (CUDA 11.8)
+[Check] cuda:0 NVIDIA GeForce RTX 3090 (sm_86) OK
+[Check] cuda:1 NVIDIA GeForce RTX 3090 (sm_86) OK
+/opt/conda/lib/python3.11/site-packages/torch/cuda/__init__.py:58: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+[Check] GPU0 <-> GPU1 copy OK (P2P access: False)
+[Check] NVIDIA Nsight Systems version 2025.5.1.121-255136380782v0
+[Check] dataset: dataset/cifar10
+[Check] dataset: dataset/cifar10_images
+[Check] shared memory: 31G
+[System] check instance environment finished
+[System] run train_cifar.py with 'run_ddp_dali.sh'...
+/opt/conda/lib/python3.11/site-packages/torch/cuda/__init__.py:58: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/opt/conda/lib/python3.11/site-packages/torch/cuda/__init__.py:58: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/workspace/CSED490F_DDP_DALI_Training/handler/DDP/train.py:109: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(sync_path, map_location=map_location)
+==> Prepare data..
+==> Prepare model..
+==> Sync model parameters
+==> Start training..
+Epoch: [0][50/98]	Time 0.115 (0.123)	Data 0.001 (0.001)	Loss 1.6537 (2.0318)	Prec@1 36.914 (28.379)	Prec@5 89.648 (78.969)
+Epoch 0 : Loss 1.8065 Prec@1 34.858 Prec@5 84.594
+Loss 1.5023 Prec@1 46.620 Prec@5 93.310
+Collecting data...
+Generating '/tmp/nsys-report-5472.qdstrm'
+[1/1] [0%                          ] gpu_1.nsys-rep[1/1] [0%                          ] gpu_1.nsys-rep[1/1] [0%                          ] gpu_1.nsys-rep[1/1] [5%                          ] gpu_1.nsys-rep[1/1] [6%                          ] gpu_1.nsys-rep[1/1] [7%                          ] gpu_1.nsys-rep[1/1] [8%                          ] gpu_1.nsys-rep[1/1] [9%                          ] gpu_1.nsys-rep[1/1] [10%                         ] gpu_1.nsys-rep[1/1] [11%                         ] gpu_1.nsys-rep[1/1] [12%                         ] gpu_1.nsys-rep[1/1] [13%                         ] gpu_1.nsys-rep[1/1] [14%                         ] gpu_1.nsys-rep[1/1] [=15%                        ] gpu_1.nsys-rep[1/1] [=16%                        ] gpu_1.nsys-rep[1/1] [=17%                        ] gpu_1.nsys-rep[1/1] [==18%                       ] gpu_1.nsys-rep[1/1] [==19%                       ] gpu_1.nsys-rep[1/1] [==20%                       ] gpu_1.nsys-rep[1/1] [==21%                       ] gpu_1.nsys-rep[1/1] [===22%                      ] gpu_1.nsys-rep[1/1] [===23%                      ] gpu_1.nsys-rep[1/1] [===24%                      ] gpu_1.nsys-rep[1/1] [====25%                     ] gpu_1.nsys-rep[1/1] [====26%                     ] gpu_1.nsys-rep[1/1] [====27%                     ] gpu_1.nsys-rep[1/1] [====28%                     ] gpu_1.nsys-rep[1/1] [=====29%                    ] gpu_1.nsys-rep[1/1] [=====30%                    ] gpu_1.nsys-rep[1/1] [=====31%                    ] gpu_1.nsys-rep[1/1] [======33%                   ] gpu_1.nsys-rep[1/1] [======34%                   ] gpu_1.nsys-rep[1/1] [======35%                   ] gpu_1.nsys-rep[1/1] [=======37%                  ] gpu_1.nsys-rep[1/1] [=======38%                  ] gpu_1.nsys-rep[1/1] [=======39%                  ] gpu_1.nsys-rep[1/1] [========41%                 ] gpu_1.nsys-rep[1/1] [========42%                 ] gpu_1.nsys-rep[1/1] [=========44%                ] gpu_1.nsys-rep[1/1] [=========45%                ] gpu_1.nsys-rep[1/1] [=========46%                ] gpu_1.nsys-rep[1/1] [==========48%               ] gpu_1.nsys-rep[1/1] [==========49%               ] gpu_1.nsys-rep[1/1] [===========51%              ] gpu_1.nsys-rep[1/1] [===========52%              ] gpu_1.nsys-rep[1/1] [===========53%              ] gpu_1.nsys-rep[1/1] [============55%             ] gpu_1.nsys-rep[1/1] [============56%             ] gpu_1.nsys-rep[1/1] [=============58%            ] gpu_1.nsys-rep[1/1] [=============59%            ] gpu_1.nsys-rep[1/1] [==============64%           ] gpu_1.nsys-rep[1/1] [========================100%] gpu_1.nsys-rep[1/1] [========================100%] gpu_1.nsys-rep
+Generated:
+	/workspace/CSED490F_DDP_DALI_Training/nsight_logs/ddp_dali_20260929_141948/gpu_1.nsys-rep
+/opt/conda/lib/python3.11/site-packages/torch/cuda/__init__.py:58: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/opt/conda/lib/python3.11/site-packages/torch/cuda/__init__.py:58: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/opt/conda/lib/python3.11/site-packages/torch/cuda/__init__.py:58: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/workspace/CSED490F_DDP_DALI_Training/handler/DDP/train.py:109: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(sync_path, map_location=map_location)
+/workspace/CSED490F_DDP_DALI_Training/handler/DDP/train.py:109: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state = torch.load(sync_path, map_location=map_location)
+==> Prepare data..
+==> Prepare model..
+==> Sync model parameters
+==> Start training..
+==> Prepare data..
+==> Prepare model..
+==> Sync model parameters
+==> Start training..
+Epoch: [0][50/98]	Time 0.090 (0.100)	Data 0.000 (0.001)	Loss 1.6437 (1.9915)	Prec@1 41.016 (29.477)	Prec@5 86.914 (79.641)
+Epoch 0 : Loss 1.7664 Prec@1 36.442 Prec@5 85.088
+Loss 1.5536 Prec@1 47.730 Prec@5 93.890
+Collecting data...
+Generating '/tmp/nsys-report-8252.qdstrm'
+[1/1] [0%                          ] gpu_2.nsys-rep[1/1] [0%                          ] gpu_2.nsys-rep[1/1] [0%                          ] gpu_2.nsys-rep[1/1] [5%                          ] gpu_2.nsys-rep[1/1] [6%                          ] gpu_2.nsys-rep[1/1] [7%                          ] gpu_2.nsys-rep[1/1] [8%                          ] gpu_2.nsys-rep[1/1] [9%                          ] gpu_2.nsys-rep[1/1] [10%                         ] gpu_2.nsys-rep[1/1] [11%                         ] gpu_2.nsys-rep[1/1] [12%                         ] gpu_2.nsys-rep[1/1] [13%                         ] gpu_2.nsys-rep[1/1] [14%                         ] gpu_2.nsys-rep[1/1] [=15%                        ] gpu_2.nsys-rep[1/1] [=16%                        ] gpu_2.nsys-rep[1/1] [=17%                        ] gpu_2.nsys-rep[1/1] [==18%                       ] gpu_2.nsys-rep[1/1] [==19%                       ] gpu_2.nsys-rep[1/1] [==20%                       ] gpu_2.nsys-rep[1/1] [==21%                       ] gpu_2.nsys-rep[1/1] [===22%                      ] gpu_2.nsys-rep[1/1] [===23%                      ] gpu_2.nsys-rep[1/1] [===24%                      ] gpu_2.nsys-rep[1/1] [====25%                     ] gpu_2.nsys-rep[1/1] [====26%                     ] gpu_2.nsys-rep[1/1] [====27%                     ] gpu_2.nsys-rep[1/1] [====28%                     ] gpu_2.nsys-rep[1/1] [=====29%                    ] gpu_2.nsys-rep[1/1] [=====30%                    ] gpu_2.nsys-rep[1/1] [=====31%                    ] gpu_2.nsys-rep[1/1] [======33%                   ] gpu_2.nsys-rep[1/1] [======34%                   ] gpu_2.nsys-rep[1/1] [======35%                   ] gpu_2.nsys-rep[1/1] [=======36%                  ] gpu_2.nsys-rep[1/1] [=======37%                  ] gpu_2.nsys-rep[1/1] [=======38%                  ] gpu_2.nsys-rep[1/1] [=======39%                  ] gpu_2.nsys-rep[1/1] [========40%                 ] gpu_2.nsys-rep[1/1] [========41%                 ] gpu_2.nsys-rep[1/1] [========42%                 ] gpu_2.nsys-rep[1/1] [=========43%                ] gpu_2.nsys-rep[1/1] [=========44%                ] gpu_2.nsys-rep[1/1] [=========45%                ] gpu_2.nsys-rep[1/1] [=========46%                ] gpu_2.nsys-rep[1/1] [==========47%               ] gpu_2.nsys-rep[1/1] [==========48%               ] gpu_2.nsys-rep[1/1] [==========49%               ] gpu_2.nsys-rep[1/1] [===========50%              ] gpu_2.nsys-rep[1/1] [===========51%              ] gpu_2.nsys-rep[1/1] [===========52%              ] gpu_2.nsys-rep[1/1] [===========53%              ] gpu_2.nsys-rep[1/1] [============54%             ] gpu_2.nsys-rep[1/1] [============55%             ] gpu_2.nsys-rep[1/1] [============56%             ] gpu_2.nsys-rep[1/1] [=============58%            ] gpu_2.nsys-rep[1/1] [=============59%            ] gpu_2.nsys-rep[1/1] [=============60%            ] gpu_2.nsys-rep[1/1] [==============61%           ] gpu_2.nsys-rep[1/1] [==============62%           ] gpu_2.nsys-rep[1/1] [===============66%          ] gpu_2.nsys-rep[1/1] [========================100%] gpu_2.nsys-rep[1/1] [========================100%] gpu_2.nsys-rep
+Generated:
+	/workspace/CSED490F_DDP_DALI_Training/nsight_logs/ddp_dali_20260929_141948/gpu_2.nsys-rep
+[System] train ended
+Tue Sep 29 14:21:01 UTC 2026
+##### END #####
