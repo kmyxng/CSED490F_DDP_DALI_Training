@@ -157,4 +157,15 @@ epoch은 10.6$\rightarrow$7.2$\rightarrow$6.7\,s로 조금만 줄어든다.
 DALI는 augmentation을 GPU로 옮기고 비동기로 미리 준비해서, 1 GPU에서 GPU 사용률과 메모리 대역폭 사용률을 80--90\% 수준으로 끌어올린다.
 그다음 병목은 GPU당 batch가 작을 때 CPU가 커널을 넣는 overhead다.
 
+\section{최종 loss와 정확도}
+
+1 epoch 학습 후 train loss는 모든 실행에서 1.74--1.81로 비슷하지만, test 정확도는 46.6\%에서 55.2\%까지 차이가 난다
+(1/2 GPU 기준 DP 55.2/49.2\%, DDP 48.8/50.5\%, DDP+DALI 46.6/47.7\%). 기댓값으로는 세 방식이 같은 SGD를 실행한다.
+모델, optimizer, augmentation, 전체 batch 512가 같고, DDP가 256장 평균 두 개를 all-reduce한 값은 DP의 512장 평균과 같다.
+차이는 대부분 실행마다 생기는 편차다. \texttt{--seed}가 실제로 적용되지 않아 초기 가중치, 데이터 순서, augmentation이 매번 다르고,
+학습이 lr 0.04의 warm-up epoch 하나뿐이다. 실제로 DDP 2 GPU를 다시 돌리면 50.5\%와 48.5\%가 나왔다. 작은 구조적 차이로는
+GPU당 BatchNorm 통계가 512장이 아닌 256장에서 계산되는 점(SyncBN 미사용), sampler마다 다른 데이터 순서, DALI의 cutout 위치 분포가 있다.
+DALI reader가 클래스 순으로 정렬된 파일 목록을 버퍼 안에서만 섞을 가능성도 있다(확인하지 못함; DALI는 세 번 모두 1--2\%p 낮았다).
+DP 로그의 loss가 약 500배 작게 보이는 것은 \texttt{DP/train.py}가 평균 loss를 batch 크기로 한 번 더 나누기 때문이다.
+
 \end{document}

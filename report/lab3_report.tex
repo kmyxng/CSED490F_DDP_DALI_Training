@@ -158,4 +158,15 @@ utilization and slows training. DDP parallelizes loading across processes and ov
 while loading dominates. DALI moves augmentation to the GPU and prefetches asynchronously, which raises GPU and memory-bandwidth utilization to 80--90\%
 on one GPU. After that, the next bottleneck is CPU kernel-launch overhead for small per-GPU batches.
 
+\section{Final loss and accuracy}
+
+After one epoch, all runs reach a similar train loss (1.74--1.81), but the test accuracy ranges from 46.6\% to 55.2\%
+(DP 55.2/49.2\%, DDP 48.8/50.5\%, DDP+DALI 46.6/47.7\% on 1/2 GPUs). In expectation the three modes run the same SGD:
+same model, optimizer, augmentation and global batch 512, and DDP's all-reduce of two 256-sample means equals DP's 512-sample mean.
+The spread is mostly run-to-run noise: \texttt{--seed} is never applied (initial weights, data order and augmentation differ per run),
+training is a single warm-up epoch at lr 0.04, and re-running DDP on 2 GPUs gave 50.5\% and 48.5\%. Smaller systematic
+differences are BatchNorm statistics over 256 instead of 512 samples per GPU (no SyncBN), different sampling orders, and, for DALI, the
+cutout placement and possibly the reader's buffer-based shuffle over a class-sorted file list (unverified; DALI was 1--2\,pt lower in all
+three runs). DP's logged loss looks $\approx$500$\times$ smaller only because \texttt{DP/train.py} divides the mean loss by the batch size again.
+
 \end{document}
